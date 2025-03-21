@@ -1,0 +1,81 @@
+.elementTile {
+  width: 60px;
+  height: 60px;
+  padding: var(--spacing-1);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  border-radius: var(--radius-md);
+  transition: all 0.2s ease-in-out;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.elementTile:hover {
+  transform: scale(1.1);
+  z-index: 10;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.atomicNumber {
+  font-size: 0.6rem;
+  font-weight: 500;
+  text-align: left;
+}
+
+.symbol {
+  font-size: 1.2rem;
+  font-weight: 700;
+  text-align: center;
+  line-height: 1;
+}
+
+.name {
+  font-size: 0.5rem;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-bottom: auto;
+}
+
+.mass {
+  font-size: 0.5rem;
+  text-align: center;
+}
+
+@media (max-width: 1100px) {
+  .elementTile {
+    width: 50px;
+    height: 50px;
+  }
+  
+  .symbol {
+    font-size: 1rem;
+  }
+  
+  .name, .mass, .atomicNumber {
+    font-size: 0.45rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .elementTile {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .symbol {
+    font-size: 0.8rem;
+  }
+  
+  .name, .mass {
+    font-size: 0.4rem;
+  }
+  
+  .atomicNumber {
+    font-size: 0.4rem;
+  }
+}

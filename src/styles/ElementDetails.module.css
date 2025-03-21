@@ -1,0 +1,129 @@
+.elementDetails {
+  padding: var(--spacing-4);
+  background-color: var(--muted-background);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  margin-top: var(--spacing-4);
+}
+
+.placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 300px;
+  text-align: center;
+  color: var(--muted);
+}
+
+.placeholder h2 {
+  margin-bottom: var(--spacing-2);
+  font-weight: 500;
+}
+
+.elementHeader {
+  display: flex;
+  gap: var(--spacing-4);
+  margin-bottom: var(--spacing-4);
+}
+
+.symbolBox {
+  width: 120px;
+  height: 120px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  border-radius: var(--radius-md);
+  padding: var(--spacing-2);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.symbolBox .atomicNumber {
+  font-size: 1rem;
+  font-weight: 500;
+  text-align: left;
+}
+
+.symbolBox .symbol {
+  font-size: 2.5rem;
+  font-weight: 700;
+  text-align: center;
+  line-height: 1;
+}
+
+.symbolBox .name {
+  font-size: 0.9rem;
+  text-align: center;
+  margin-bottom: auto;
+}
+
+.symbolBox .mass {
+  font-size: 0.8rem;
+  text-align: center;
+}
+
+.elementBasic {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.elementBasic h1 {
+  font-size: 2rem;
+  margin-bottom: var(--spacing-1);
+}
+
+.category {
+  font-size: 1.1rem;
+  color: var(--muted);
+}
+
+.propertiesGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: var(--spacing-4);
+  margin-bottom: var(--spacing-4);
+}
+
+.property {
+  border-bottom: 1px solid var(--border);
+  padding-bottom: var(--spacing-2);
+}
+
+.property h3 {
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--muted);
+  margin-bottom: var(--spacing-1);
+}
+
+.property p {
+  font-size: 1.1rem;
+}
+
+.description {
+  margin-top: var(--spacing-4);
+  padding-top: var(--spacing-4);
+  border-top: 1px solid var(--border);
+}
+
+.description h3 {
+  margin-bottom: var(--spacing-2);
+  font-size: 1.2rem;
+}
+
+.description p {
+  line-height: 1.6;
+}
+
+@media (max-width: 768px) {
+  .elementHeader {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  
+  .propertiesGrid {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  }
+}

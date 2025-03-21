@@ -1,0 +1,46 @@
+.elementTile {
+  width: 70px;
+  height: 70px;
+  margin: 2px;
+  padding: 5px;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: relative;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.elementTile:hover {
+  transform: scale(1.05);
+  z-index: 1;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.atomicNumber {
+  font-size: 10px;
+  text-align: left;
+  opacity: 0.8;
+}
+
+.symbol {
+  font-size: 22px;
+  font-weight: bold;
+  text-align: center;
+}
+
+.name {
+  font-size: 8px;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.mass {
+  font-size: 8px;
+  text-align: right;
+  opacity: 0.8;
+}

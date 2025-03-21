@@ -1,0 +1,79 @@
+.canvas3DContainer {
+  width: 100%;
+  height: 600px;
+  position: relative;
+  background-color: var(--muted-background);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.loadingOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.3);
+  color: white;
+  font-size: 1.2rem;
+  z-index: 10;
+}
+
+.controls {
+  position: absolute;
+  bottom: var(--spacing-4);
+  right: var(--spacing-4);
+  display: flex;
+  gap: var(--spacing-2);
+  z-index: 5;
+}
+
+.controlButton {
+  background-color: var(--background);
+  color: var(--foreground);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-full);
+  width: 40px;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.controlButton:hover {
+  background-color: var(--primary);
+  color: white;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.instructions {
+  position: absolute;
+  top: var(--spacing-4);
+  left: var(--spacing-4);
+  background-color: rgba(0, 0, 0, 0.6);
+  color: white;
+  padding: var(--spacing-2) var(--spacing-4);
+  border-radius: var(--radius-md);
+  font-size: 0.9rem;
+  z-index: 5;
+  pointer-events: none;
+  opacity: 0.8;
+}
+
+@media (max-width: 768px) {
+  .canvas3DContainer {
+    height: 400px;
+  }
+  
+  .instructions {
+    font-size: 0.8rem;
+    padding: var(--spacing-1) var(--spacing-2);
+  }
+}

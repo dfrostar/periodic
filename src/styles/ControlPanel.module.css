@@ -1,0 +1,72 @@
+.controlPanel {
+  background-color: var(--muted-background);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-4);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-4);
+}
+
+.controlGroup {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2);
+}
+
+.controlGroup h3 {
+  font-size: 1rem;
+  font-weight: 500;
+  margin-bottom: var(--spacing-1);
+}
+
+.buttonGroup {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-2);
+}
+
+.controlButton {
+  padding: var(--spacing-2) var(--spacing-4);
+  background-color: var(--background);
+  color: var(--foreground);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+}
+
+.controlButton:hover {
+  background-color: var(--primary);
+  color: white;
+  border-color: var(--primary);
+}
+
+.controlButton.active {
+  background-color: var(--primary);
+  color: white;
+  border-color: var(--primary);
+}
+
+.controlInfo {
+  padding-top: var(--spacing-2);
+  border-top: 1px solid var(--border);
+  font-size: 0.9rem;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+@media (max-width: 768px) {
+  .controlPanel {
+    padding: var(--spacing-3);
+  }
+  
+  .buttonGroup {
+    flex-direction: column;
+  }
+  
+  .controlButton {
+    width: 100%;
+    text-align: center;
+  }
+}

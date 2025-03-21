@@ -1,0 +1,14 @@
+.canvas3DContainer {
+  width: 100%;
+  height: 600px;
+  border-radius: 8px;
+  overflow: hidden;
+  background-color: #000;
+}
+
+/* These styles will help with the canvas rendering */
+.canvas3DContainer canvas {
+  width: 100% !important;
+  height: 100% !important;
+  outline: none;
+}
