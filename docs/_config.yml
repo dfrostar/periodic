@@ -1,0 +1,20 @@
+remote_theme: pmarsceill/just-the-docs
+title: Periodic Table Visualization
+description: Interactive 3D periodic table with element properties visualization
+baseurl: "/periodic"
+url: "https://dfrostar.github.io"
+aux_links:
+  "View on GitHub": "https://github.com/dfrostar/periodic"
+heading_anchors: true
+color_scheme: light
+search_enabled: true
+enable_copy_code_button: true
+
+# Navigation structure
+nav_external_links:
+  - title: Project Repository
+    url: https://github.com/dfrostar/periodic
+    hide_icon: false
+
+# Footer content
+footer_content: "Copyright &copy; 2025 dfrostar. Distributed under an MIT license."
