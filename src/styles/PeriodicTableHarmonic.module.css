@@ -1,0 +1,415 @@
+.container {
+  position: relative;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.canvas {
+  width: 100%;
+  background-color: #111;
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 600px;
+  background-color: var(--background);
+  color: var(--foreground);
+  font-size: 1.5rem;
+}
+
+.error {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 600px;
+  background-color: var(--background);
+  color: var(--destructive);
+  font-size: 1.5rem;
+}
+
+.controls {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 10;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  backdrop-filter: blur(8px);
+  background-color: rgba(0, 0, 0, 0.3);
+  padding: 10px;
+  border-radius: var(--radius);
+}
+
+.select {
+  background-color: var(--background);
+  color: var(--foreground);
+  border: 1px solid var(--border);
+  padding: 8px 16px;
+  border-radius: var(--radius);
+  font-size: 14px;
+  outline: none;
+}
+
+.controlButton {
+  background-color: var(--background);
+  color: var(--foreground);
+  border: 1px solid var(--border);
+  padding: 8px 16px;
+  border-radius: var(--radius);
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.2s ease;
+}
+
+.controlButton:hover {
+  background-color: var(--primary);
+  color: white;
+  border-color: var(--primary);
+}
+
+.checkboxContainer {
+  display: flex;
+  align-items: center;
+  background-color: var(--background);
+  border-radius: var(--radius);
+  padding: 4px 12px;
+  border: 1px solid var(--border);
+}
+
+.checkbox {
+  margin-right: 8px;
+  cursor: pointer;
+  accent-color: var(--primary);
+}
+
+.checkboxLabel {
+  font-size: 14px;
+  color: var(--foreground);
+  cursor: pointer;
+}
+
+.info {
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  z-index: 10;
+  backdrop-filter: blur(8px);
+  background-color: rgba(0, 0, 0, 0.3);
+  padding: 10px;
+  border-radius: var(--radius);
+  color: white;
+  max-width: 400px;
+}
+
+.info p {
+  margin: 5px 0;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.frequencyLegend {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  z-index: 10;
+  backdrop-filter: blur(8px);
+  background-color: rgba(0, 0, 0, 0.3);
+  padding: 10px;
+  border-radius: var(--radius);
+  color: white;
+  max-width: 250px;
+  font-size: 12px;
+}
+
+.elementDetails {
+  position: absolute;
+  top: 50%;
+  left: 20px;
+  transform: translateY(-50%);
+  z-index: 10;
+  backdrop-filter: blur(12px);
+  background-color: rgba(10, 10, 10, 0.85);
+  padding: 16px;
+  border-radius: var(--radius);
+  color: white;
+  max-width: 300px;
+  font-size: 14px;
+  border-left: 4px solid var(--primary);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease;
+}
+
+.elementDetails h4 {
+  font-size: 1.4rem;
+  margin: 0 0 12px 0;
+  color: var(--primary);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.elementDetails p {
+  margin: 6px 0;
+}
+
+.elementSection {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.closeButton {
+  background: none;
+  border: none;
+  color: var(--muted-foreground);
+  cursor: pointer;
+  font-size: 16px;
+  padding: 0;
+  margin-left: auto;
+}
+
+.closeButton:hover {
+  color: white;
+}
+
+.musicalProperties {
+  background-color: rgba(0, 0, 0, 0.2);
+  padding: 8px;
+  border-radius: 4px;
+  margin-top: 8px;
+}
+
+.musicalProperties p {
+  margin: 4px 0;
+  font-size: 13px;
+}
+
+.legendItem {
+  display: flex;
+  align-items: center;
+  margin-bottom: 4px;
+}
+
+.legendColor {
+  width: 12px;
+  height: 12px;
+  margin-right: 8px;
+  border-radius: 2px;
+}
+
+.audioControls {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.audioControl {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.audioControl label {
+  font-size: 12px;
+  min-width: 80px;
+}
+
+.audioControl input {
+  flex: 1;
+}
+
+.visualControls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.instructionsPanel {
+  background-color: rgba(0, 0, 0, 0.7);
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.instructionsPanel h3 {
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+  color: #4da6ff;
+  font-size: 1.1rem;
+}
+
+.instructionsPanel ul {
+  margin: 0.5rem 0;
+  padding-left: 1.5rem;
+}
+
+.instructionsPanel li {
+  margin-bottom: 0.5rem;
+  color: #e6e6e6;
+}
+
+.instructionsPanel strong {
+  color: #66ccff;
+}
+
+.selectContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.selectContainer label {
+  font-size: 0.9rem;
+  color: #cccccc;
+}
+
+.playButton {
+  background-color: #4a65ff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.2s;
+}
+
+.playButton:hover {
+  background-color: #2a45df;
+}
+
+.playButton:disabled {
+  background-color: #555;
+  cursor: not-allowed;
+}
+
+.spectroscopyExplanation,
+.musicalExplanation {
+  margin: 20px;
+  padding: 15px;
+  background-color: rgba(255, 255, 255, 0.9);
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.spectroscopyExplanation h4,
+.musicalExplanation h4 {
+  color: #333;
+  margin-top: 0;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 10px;
+}
+
+.spectroscopyExplanation p,
+.musicalExplanation p {
+  line-height: 1.6;
+  color: #444;
+}
+
+.spectroscopyExplanation ul {
+  padding-left: 20px;
+}
+
+.spectroscopyExplanation li {
+  margin-bottom: 5px;
+}
+
+.spectralLines {
+  width: 100%;
+  height: 100px;
+  background-color: #000;
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  border-radius: 5px;
+  margin-top: 10px;
+  overflow: hidden;
+  position: relative;
+}
+
+.spectralLine {
+  position: absolute;
+  height: 80%;
+  width: 2px;
+  background-color: white;
+}
+
+.spectralLineLabel {
+  position: absolute;
+  color: white;
+  font-size: 10px;
+  transform: rotate(-90deg);
+  transform-origin: left bottom;
+  white-space: nowrap;
+}
+
+.currentlyPlaying {
+  animation: pulse 1s infinite alternate;
+  border: 2px solid yellow !important;
+}
+
+.educationalContent {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.spectralPanel {
+  background-color: #f5f5f5;
+  border-radius: 8px;
+  padding: 15px;
+  margin-top: 15px;
+}
+
+.spectralHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.spectralHeader h4 {
+  margin: 0;
+}
+
+.mainContent {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: 1rem;
+}
+
+.visualizationContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  width: 100%;
+}
+
+.atomicStructurePanelLarge {
+  width: 100%;
+  min-height: 400px;
+  background-color: rgba(30, 30, 35, 0.95);
+  border-radius: 8px;
+  border: 1px solid #444;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  overflow: hidden;
+  margin-top: 1rem;
+}
+
+@keyframes pulse {
+  from {
+    box-shadow: 0 0 0 0 rgba(255, 255, 0, 0.7);
+  }
+  to {
+    box-shadow: 0 0 0 10px rgba(255, 255, 0, 0);
+  }
+}

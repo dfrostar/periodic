@@ -1,3 +1,226 @@
+.periodicTableContainer {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100vh;
+  background-color: #121212;
+  color: #ffffff;
+}
+
+.controlBar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 1rem;
+  background-color: #232323;
+  border-bottom: 1px solid #333;
+  width: 100%;
+  height: auto;
+  font-size: 0.85rem;
+}
+
+.controls {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.controls label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+}
+
+.controls input[type="checkbox"] {
+  margin: 0;
+  width: 16px;
+  height: 16px;
+}
+
+.controls input[type="range"] {
+  width: 100px;
+}
+
+.mainContent {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  width: 100%;
+  overflow: auto;
+}
+
+.visualizationContainer {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 50vh;
+  min-height: 300px;
+  position: relative;
+}
+
+.visualization {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: 300px;
+}
+
+.zoomInstructions {
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: rgba(0, 0, 0, 0.5);
+  padding: 5px 10px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.elementDescription {
+  padding: 1rem;
+  background-color: #1a1a1a;
+  border-top: 1px solid #333;
+}
+
+.elementDescription h2 {
+  margin-top: 0;
+  color: #ffffff;
+  font-size: 1.5rem;
+}
+
+.elementInfo {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 1rem;
+}
+
+.elementInfo p {
+  margin: 0.3rem 0;
+}
+
+.atomicStructurePanelLarge {
+  width: 100%;
+  padding: 1rem;
+  background-color: #1a1a1a;
+  border-top: 1px solid #333;
+  min-height: 400px;
+  height: 50vh;
+  overflow: auto;
+}
+
+.sectionTitle {
+  font-size: 1.3rem;
+  margin-top: 0;
+  margin-bottom: 1rem;
+  color: #ffffff;
+  border-bottom: 1px solid #444;
+  padding-bottom: 0.5rem;
+}
+
+.contentContainer {
+  display: none; /* Hide old container */
+}
+
+.atomicStructurePanel {
+  display: none; /* Hide old panel */
+}
+
+.interactiveControls {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background-color: rgba(0, 0, 0, 0.7);
+  padding: 1rem;
+  border-radius: 4px;
+  max-width: 300px;
+  z-index: 100;
+}
+
+.interactiveControls h3 {
+  margin-top: 0;
+  font-size: 1rem;
+}
+
+.interactiveControls ul {
+  margin: 0;
+  padding-left: 1.5rem;
+  font-size: 0.85rem;
+}
+
+.interactiveControls li {
+  margin-bottom: 0.5rem;
+}
+
+.visualizationControls {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.visualizationSelector {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.visualizationSelector select {
+  padding: 0.25rem 0.5rem;
+  background-color: #333;
+  color: white;
+  border: 1px solid #444;
+  border-radius: 4px;
+  font-size: 0.85rem;
+}
+
+.playButton {
+  padding: 0.25rem 0.75rem;
+  background-color: #1a73e8;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.85rem;
+}
+
+.playButton:hover {
+  background-color: #1558b3;
+}
+
+.soundControls {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.soundSelector {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.soundSelector select {
+  padding: 0.25rem 0.5rem;
+  background-color: #333;
+  color: white;
+  border: 1px solid #444;
+  border-radius: 4px;
+  font-size: 0.85rem;
+}
+
+.sliderContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  font-size: 0.85rem;
+}
+
+.slider {
+  width: 150px;
+}
+
 .canvas3DContainer {
   width: 100%;
   height: 600px;
@@ -6,6 +229,11 @@
   border-radius: var(--radius-lg);
   overflow: hidden;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.container3D {
+  position: relative;
+  width: 100%;
 }
 
 .loadingOverlay {
@@ -23,13 +251,13 @@
   z-index: 10;
 }
 
-.controls {
+.controls3D {
   position: absolute;
-  bottom: var(--spacing-4);
-  right: var(--spacing-4);
+  top: 10px;
+  left: 10px;
+  z-index: 10;
   display: flex;
-  gap: var(--spacing-2);
-  z-index: 5;
+  gap: 10px;
 }
 
 .controlButton {
@@ -47,10 +275,29 @@
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
+.controlButton3D {
+  background-color: rgba(255, 255, 255, 0.15);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s;
+}
+
 .controlButton:hover {
   background-color: var(--primary);
   color: white;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.controlButton3D:hover {
+  background-color: rgba(255, 255, 255, 0.25);
+}
+
+.controlButton3D:focus {
+  outline: 2px solid rgba(255, 255, 255, 0.5);
 }
 
 .instructions {
@@ -67,6 +314,78 @@
   opacity: 0.8;
 }
 
+.elementDetailsPanel {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  background-color: rgba(0, 0, 0, 0.8);
+  color: white;
+  width: 300px;
+  max-width: 90%;
+  border-radius: 8px;
+  padding: 15px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  z-index: 100;
+  overflow: auto;
+  max-height: 400px;
+  backdrop-filter: blur(5px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  transition: transform 0.2s ease, opacity 0.2s ease;
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.elementHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 10px;
+  margin-bottom: 10px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.elementHeader h2 {
+  margin: 0;
+  font-size: 1.4rem;
+  color: white;
+}
+
+.closeButton {
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 1.5rem;
+  cursor: pointer;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: background-color 0.2s ease;
+}
+
+.closeButton:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+  color: white;
+}
+
+.elementProperties {
+  font-size: 0.9rem;
+  margin-bottom: 15px;
+}
+
+.elementProperties p {
+  margin: 5px 0;
+}
+
+.elementDescription {
+  font-size: 0.85rem;
+  line-height: 1.4;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+/* Responsive design for smaller screens */
 @media (max-width: 768px) {
   .canvas3DContainer {
     height: 400px;
@@ -75,5 +394,58 @@
   .instructions {
     font-size: 0.8rem;
     padding: var(--spacing-1) var(--spacing-2);
+  }
+  
+  .elementDetailsPanel {
+    bottom: 10px;
+    right: 10px;
+    width: 250px;
+  }
+  
+  .elementHeader h2 {
+    font-size: 1.2rem;
+  }
+  
+  .elementProperties, .elementDescription {
+    font-size: 0.8rem;
+  }
+  
+  .zoomInstructions {
+    font-size: 12px;
+    padding: 6px 10px;
+  }
+}
+
+@media (max-width: 1200px) {
+  .contentContainer {
+    display: none;
+  }
+  
+  .atomicStructurePanel {
+    display: none;
+  }
+}
+
+@media (min-width: 1200px) {
+  .visualizationContainer {
+    height: 60vh;
+  }
+  
+  .atomicStructurePanelLarge {
+    height: 40vh;
+  }
+}
+
+@media (max-width: 768px) {
+  .elementInfo {
+    grid-template-columns: 1fr;
+  }
+  
+  .visualizationContainer {
+    height: 45vh;
+  }
+  
+  .atomicStructurePanelLarge {
+    height: 55vh;
   }
 }

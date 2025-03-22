@@ -1,10 +1,14 @@
 # Periodic Table Visualization
 
-Interactive visualization of the periodic table of elements with 2D and 3D views, detailed element information, and dynamic coloring schemes.
+Interactive visualization of the periodic table of elements with 2D, 3D, and harmonic views, detailed element information, and atomic structure visualization.
 
 ## Features
-- 2D and 3D visualizations of the periodic table
-- Color schemes based on element categories, physical states, and atomic radius
+- Multiple visualization modes:
+  - 2D classic periodic table layout
+  - 3D interactive cube representation
+  - Harmonic visualization based on spectral and musical properties
+- Atomic structure visualization showing protons, neutrons, and electrons
+- Color schemes based on element categories, physical states, atomic radius, and musical notes
 - Detailed element property information
 - Interactive interface with element selection
 - Responsive design for various screen sizes
@@ -49,10 +53,11 @@ npm run dev
 
 ## Usage
 The application provides an interactive interface for exploring the periodic table. Users can:
-- Switch between 2D and 3D view modes
+- Switch between 2D, 3D, and harmonic view modes
 - Change coloring schemes to visualize different element properties
-- Click on elements to view detailed information
+- Click on elements to view detailed information and atomic structure
 - Rotate and zoom the 3D visualization
+- Explore elements based on their musical and spectral properties in harmonic mode
 
 ### Component Examples
 ```jsx
@@ -62,9 +67,19 @@ The application provides an interactive interface for exploring the periodic tab
   colorScheme="atomic-radius"
 />
 
-// Use the ElementDetails component to display element information
-<ElementDetails />
+// Use the AtomicStructure component to display atomic structure
+<AtomicStructure element={selectedElement} />
+
+// Use the PeriodicTableHarmonic component for musical visualization
+<PeriodicTableHarmonic colorScheme="spectral" />
 ```
+
+## Atomic Structure Visualization
+The application features a detailed atomic structure visualization that shows:
+- Protons (red) and neutrons (blue) clustered in the nucleus
+- Electrons (green) orbiting in electron shells
+- Accurate particle counts based on actual element data
+- Interactive 3D view with camera controls
 
 ## Deployment
 The application is configured for deployment on Vercel:

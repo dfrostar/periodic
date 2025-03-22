@@ -6,9 +6,10 @@ import ElementTile from './ElementTile';
 import PeriodicTable3D from './PeriodicTable3D';
 import { fetchElements } from '@/lib/api';
 import { Element } from '@/types/element';
+import AtomicStructure from './AtomicStructure';
 
 interface PeriodicTableProps {
-  mode: '2d' | '3d';
+  mode: '2d' | '3d' | 'harmonic';
   colorScheme: string;
 }
 
@@ -19,6 +20,7 @@ const PeriodicTable: React.FC<PeriodicTableProps> = ({ mode, colorScheme }) => {
   });
   
   const setSelectedElement = useElementStore(state => state.setSelectedElement);
+  const selectedElement = useElementStore(state => state.selectedElement);
 
   if (isLoading) return <div className={styles.loading}>Loading elements data...</div>;
   
@@ -47,29 +49,38 @@ const PeriodicTable: React.FC<PeriodicTableProps> = ({ mode, colorScheme }) => {
   };
 
   return (
-    <div className={styles.tableContainer}>
-      <div className={styles.periodicTable}>
-        {tableStructure.map((row, rowIndex) => (
-          <div key={`row-${rowIndex}`} className={styles.tableRow}>
-            {row.map((atomicNumber, colIndex) => {
-              if (atomicNumber === 0) {
-                return <div key={`empty-${rowIndex}-${colIndex}`} className={styles.emptyCell} />;
-              }
-              
-              const element = elements?.find(el => el.atomicNumber === atomicNumber);
-              if (!element) return null;
-              
-              return (
-                <ElementTile 
-                  key={element.symbol}
-                  element={element}
-                  colorScheme={colorScheme}
-                  onClick={() => handleElementClick(element)}
-                />
-              );
-            })}
+    <div className={styles.mainContent}>
+      <div className={styles.visualizationContainer}>
+        <div className={styles.tableContainer}>
+          <div className={styles.periodicTable}>
+            {tableStructure.map((row, rowIndex) => (
+              <div key={`row-${rowIndex}`} className={styles.tableRow}>
+                {row.map((atomicNumber, colIndex) => {
+                  if (atomicNumber === 0) {
+                    return <div key={`empty-${rowIndex}-${colIndex}`} className={styles.emptyCell} />;
+                  }
+                  
+                  const element = elements?.find(el => el.atomicNumber === atomicNumber);
+                  if (!element) return null;
+                  
+                  return (
+                    <ElementTile 
+                      key={element.symbol}
+                      element={element}
+                      colorScheme={colorScheme}
+                      onClick={() => handleElementClick(element)}
+                    />
+                  );
+                })}
+              </div>
+            ))}
           </div>
-        ))}
+        </div>
+        {selectedElement && (
+          <div className={styles.atomicStructurePanelLarge}>
+            <AtomicStructure element={selectedElement} />
+          </div>
+        )}
       </div>
     </div>
   );
