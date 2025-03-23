@@ -1,10 +1,11 @@
 import React from 'react';
 import styles from '@/styles/ControlPanel.module.css';
+import ColorLegend from './ColorLegend';
 
 interface ControlPanelProps {
-  viewMode: '2d' | '3d';
+  viewMode: '2d' | '3d' | 'harmonic';
   colorScheme: string;
-  onViewModeChange: (mode: '2d' | '3d') => void;
+  onViewModeChange: (mode: '2d' | '3d' | 'harmonic') => void;
   onColorSchemeChange: (scheme: string) => void;
 }
 
@@ -30,6 +31,12 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
             onClick={() => onViewModeChange('3d')}
           >
             3D
+          </button>
+          <button
+            className={`${styles.controlButton} ${viewMode === 'harmonic' ? styles.active : ''}`}
+            onClick={() => onViewModeChange('harmonic')}
+          >
+            Harmonic
           </button>
         </div>
       </div>
@@ -58,8 +65,25 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
           >
             Atomic Radius
           </button>
+          <button
+            className={`${styles.controlButton} ${colorScheme === 'frequency' ? styles.active : ''}`}
+            onClick={() => onColorSchemeChange('frequency')}
+            title="Color by element frequency patterns"
+          >
+            Frequency
+          </button>
+          <button
+            className={`${styles.controlButton} ${colorScheme === 'octave' ? styles.active : ''}`}
+            onClick={() => onColorSchemeChange('octave')}
+            title="Color by element octave periods"
+          >
+            Octave
+          </button>
         </div>
       </div>
+      
+      {/* Display the appropriate color legend based on the selected scheme */}
+      <ColorLegend colorScheme={colorScheme} />
       
       <div className={styles.controlInfo}>
         <p>

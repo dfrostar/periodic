@@ -1,0 +1,80 @@
+.legendContainer {
+  background-color: rgba(30, 40, 50, 0.8);
+  border-radius: 8px;
+  padding: 12px;
+  margin-top: 15px;
+  max-width: 100%;
+}
+
+.legendTitle {
+  margin: 0 0 10px 0;
+  color: #f0f0f0;
+  font-size: 16px;
+  font-weight: 500;
+  text-align: center;
+}
+
+.legendItems {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+}
+
+.legendItem {
+  display: flex;
+  align-items: center;
+  margin-right: 10px;
+  font-size: 12px;
+  color: #f0f0f0;
+}
+
+.colorBox {
+  width: 15px;
+  height: 15px;
+  border-radius: 3px;
+  margin-right: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.gradientLegend {
+  width: 100%;
+  max-width: 300px;
+  margin: 0 auto;
+}
+
+.gradientBar {
+  height: 15px;
+  width: 100%;
+  border-radius: 3px;
+  background: linear-gradient(to right, hsl(0, 80%, 65%), hsl(240, 80%, 65%));
+  margin-bottom: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.gradientLabels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: #f0f0f0;
+}
+
+.frequencyLegend, .octaveLegend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+  width: 100%;
+}
+
+@media (max-width: 768px) {
+  .legendItem {
+    font-size: 10px;
+    margin-right: 5px;
+  }
+  
+  .colorBox {
+    width: 12px;
+    height: 12px;
+  }
+}

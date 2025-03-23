@@ -42,6 +42,17 @@
   padding: var(--spacing-4);
 }
 
+.controlLabel {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.controlLabel input {
+  cursor: pointer;
+}
+
 @media (max-width: 1100px) {
   .tableContainer {
     padding: var(--spacing-2);

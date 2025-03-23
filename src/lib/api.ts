@@ -1,5 +1,6 @@
 import { Element } from '@/types/element';
 import Papa from 'papaparse';
+import { useQuery } from '@tanstack/react-query';
 
 /**
  * Fetches element data from the JSON file
@@ -51,9 +52,20 @@ export const fetchElements = async (): Promise<Element[]> => {
       }));
     } catch (csvError) {
       console.error('Both JSON and CSV fetches failed:', csvError);
-      throw new Error('Failed to load element data from any source');
+      // Return empty array as a last resort to prevent app from crashing
+      return [];
     }
   }
+};
+
+/**
+ * React Query hook for fetching elements
+ */
+export const useElements = () => {
+  return useQuery({
+    queryKey: ['elements'],
+    queryFn: fetchElements
+  });
 };
 
 /**
@@ -69,11 +81,11 @@ export const fetchElementByAtomicNumber = async (atomicNumber: number): Promise<
  */
 export const searchElements = async (query: string): Promise<Element[]> => {
   const elements = await fetchElements();
-  const lowercaseQuery = query.toLowerCase();
+  const lowerQuery = query.toLowerCase();
   
   return elements.filter(element => 
-    element.name.toLowerCase().includes(lowercaseQuery) ||
-    element.symbol.toLowerCase().includes(lowercaseQuery) ||
-    element.category.toLowerCase().includes(lowercaseQuery)
+    element.name.toLowerCase().includes(lowerQuery) ||
+    element.symbol.toLowerCase().includes(lowerQuery) ||
+    (element.category && element.category.toLowerCase().includes(lowerQuery))
   );
 };

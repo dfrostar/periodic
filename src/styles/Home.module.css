@@ -9,14 +9,14 @@
   display: flex;
   flex-direction: column;
   padding: var(--spacing-4);
-  max-width: 1400px;
+  max-width: 1800px;
   width: 100%;
   margin: 0 auto;
 }
 
 .header {
   text-align: center;
-  margin-bottom: var(--spacing-8);
+  margin-bottom: var(--spacing-4);
   padding: var(--spacing-4) 0;
 }
 
@@ -36,17 +36,33 @@
 }
 
 .grid {
-  display: grid;
-  grid-template-columns: 300px 1fr;
+  display: flex;
+  flex-direction: column;
   gap: var(--spacing-4);
   margin-bottom: var(--spacing-6);
+  width: 100%;
+}
+
+.componentBox {
+  background-color: var(--card-bg);
+  border-radius: var(--radius);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: var(--spacing-4);
+  margin-bottom: var(--spacing-4);
+  width: 100%;
 }
 
 .controls {
-  height: fit-content;
+  width: 100%;
 }
 
 .tableWrapper {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.detailsWrapper {
   width: 100%;
 }
 
@@ -58,9 +74,36 @@
   font-size: 0.9rem;
 }
 
+.atomicModelWrapper {
+  width: 100%;
+}
+
+.placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 250px;
+  background-color: var(--bg-secondary);
+  border-radius: var(--radius);
+  padding: var(--spacing-4);
+  text-align: center;
+  color: var(--muted);
+}
+
+.placeholder h2 {
+  margin-bottom: var(--spacing-3);
+  color: var(--text);
+}
+
+.placeholder p {
+  font-size: 1.1rem;
+}
+
 @media (max-width: 992px) {
-  .grid {
-    grid-template-columns: 1fr;
+  .main {
+    max-width: 100%;
+    padding: var(--spacing-2);
   }
   
   .title {
@@ -69,6 +112,10 @@
   
   .description {
     font-size: 1rem;
+  }
+  
+  .componentBox {
+    padding: var(--spacing-3);
   }
 }
 
@@ -79,5 +126,9 @@
   
   .title {
     font-size: 1.8rem;
+  }
+  
+  .componentBox {
+    padding: var(--spacing-2);
   }
 }
