@@ -1,0 +1,128 @@
+.searchFilterContainer {
+  width: 100%;
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  background-color: rgba(30, 30, 30, 0.9);
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.searchBox {
+  display: flex;
+  position: relative;
+  margin-bottom: 1rem;
+}
+
+.searchInput {
+  flex: 1;
+  padding: 0.75rem 1rem;
+  border: 1px solid #444;
+  border-radius: 4px;
+  background-color: #222;
+  color: #fff;
+  font-size: 1rem;
+  transition: all 0.2s ease;
+}
+
+.searchInput:focus {
+  border-color: #7c4dff;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(124, 77, 255, 0.3);
+}
+
+.clearButton {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: #999;
+  font-size: 1.2rem;
+  cursor: pointer;
+  padding: 0;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+}
+
+.clearButton:hover:not(:disabled) {
+  color: #fff;
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.clearButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.filtersContainer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 0.5rem;
+}
+
+.filterGroup {
+  display: flex;
+  flex-direction: column;
+  min-width: 150px;
+  flex: 1;
+}
+
+.filterGroup label {
+  font-size: 0.85rem;
+  margin-bottom: 0.3rem;
+  color: #ccc;
+}
+
+.filterSelect {
+  padding: 0.5rem;
+  border: 1px solid #444;
+  border-radius: 4px;
+  background-color: #2a2a2a;
+  color: #fff;
+  font-size: 0.9rem;
+}
+
+.filterSelect:focus {
+  border-color: #7c4dff;
+  outline: none;
+}
+
+.clearFiltersButton {
+  margin-top: 1.5rem;
+  padding: 0.5rem 1rem;
+  background-color: #444;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background-color 0.2s;
+  align-self: flex-end;
+}
+
+.clearFiltersButton:hover {
+  background-color: #555;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .filtersContainer {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  
+  .filterGroup {
+    width: 100%;
+  }
+  
+  .clearFiltersButton {
+    width: 100%;
+    margin-top: 1rem;
+  }
+}

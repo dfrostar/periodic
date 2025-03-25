@@ -9,132 +9,157 @@ interface ElementTileProps {
 }
 
 const ElementTile: React.FC<ElementTileProps> = ({ element, colorScheme, onClick }) => {
+  // Color functions for each color scheme type
+  const getCategoryColor = () => {
+    switch (element.category) {
+      case 'alkali-metal': 
+      case 'alkali metal': return '#ff4c4c'; // Consistent red
+      case 'alkaline-earth-metal': 
+      case 'alkaline earth metal': return '#ff9999'; // Consistent light red
+      case 'transition-metal': 
+      case 'transition metal': return '#ffb86c'; // Consistent orange
+      case 'post-transition-metal': 
+      case 'post-transition metal': return '#8be9fd'; // Consistent light blue
+      case 'metalloid': return '#bd93f9'; // Consistent purple
+      case 'nonmetal': return '#0096FF'; // Consistent blue
+      case 'halogen': return '#ff79c6'; // Consistent pink
+      case 'noble-gas': 
+      case 'noble gas': return '#5cb3cc'; // Consistent light blue
+      case 'lanthanoid': return '#50fa7b'; // Consistent green
+      case 'actinoid': return '#94e2d5'; // Consistent teal
+      default: return '#bfbfbf'; // Consistent gray
+    }
+  };
+  
+  const getStateColor = () => {
+    switch (element.state) {
+      case 'solid': return '#FFB861'; // Match R3F solid color
+      case 'liquid': return '#6495ED'; // Match R3F liquid color
+      case 'gas': return '#63E2FF'; // Match R3F gas color
+      default: return '#bfbfbf';
+    }
+  };
+  
+  const getAtomicRadiusColor = () => {
+    // Generate color based on atomic radius
+    const radius = element.atomicRadius ?? element.atomicMass / 10;
+    const normalizedRadius = Math.min(Math.max((radius - 30) / 200, 0), 1);
+    
+    // Color gradient from blue to red (matching R3F)
+    const r = Math.floor(normalizedRadius * 255);
+    const g = Math.floor((1 - Math.abs(normalizedRadius - 0.5) * 2) * 255);
+    const b = Math.floor((1 - normalizedRadius) * 255);
+    
+    return `rgb(${r}, ${g}, ${b})`;
+  };
+  
+  const getFrequencyColor = () => {
+    // Musical frequency based on notes (C to B)
+    const noteIndex = (element.atomicNumber % 12);
+    
+    // Map to musical note colors in a rainbow spectrum (matching R3F)
+    const noteColors = [
+      "#ff0000", // C (red)
+      "#ff4e00", // C#
+      "#ff9900", // D
+      "#ffe100", // D#
+      "#ccff00", // E
+      "#66ff00", // F
+      "#00ff66", // F#
+      "#00ffcc", // G
+      "#00ccff", // G#
+      "#0066ff", // A
+      "#4c00ff", // A#
+      "#9900ff"  // B (violet)
+    ];
+    
+    return noteColors[noteIndex];
+  };
+  
+  const getOctaveColor = () => {
+    // Color based on octave in the musical scale
+    const elemOctave = Math.floor(element.atomicNumber / 12);
+    const octaveColors = [
+      "#ff0000", // 1st octave (red)
+      "#ff7700", // 2nd octave (orange)
+      "#ffff00", // 3rd octave (yellow)
+      "#00ff00", // 4th octave (green)
+      "#0000ff", // 5th octave (blue)
+      "#8a2be2", // 6th octave (indigo)
+      "#ff00ff", // 7th octave (violet)
+      "#ffffff"  // 8th octave (white)
+    ];
+    
+    return octaveColors[elemOctave % octaveColors.length];
+  };
+
   // Get color based on selected color scheme
   const getBackgroundColor = () => {
-    if (colorScheme === 'category') {
-      switch (element.category) {
-        case 'alkali-metal': return '#ff8a65';
-        case 'alkaline-earth-metal': return '#ffb74d';
-        case 'transition-metal': return '#ffd54f';
-        case 'post-transition-metal': return '#dce775';
-        case 'metalloid': return '#aed581';
-        case 'nonmetal': return '#4fc3f7';
-        case 'halogen': return '#4dd0e1';
-        case 'noble-gas': return '#7986cb';
-        case 'lanthanoid': return '#ba68c8';
-        case 'actinoid': return '#f06292';
-        default: return '#e0e0e0';
-      }
-    } else if (colorScheme === 'state') {
-      switch (element.state) {
-        case 'solid': return '#90caf9';
-        case 'liquid': return '#80deea';
-        case 'gas': return '#ef9a9a';
-        default: return '#e0e0e0';
-      }
-    } else if (colorScheme === 'atomic-radius') {
-      // Generate color based on atomic radius - from red (small) to blue (large)
-      const min = 40; // approximate minimum atomic radius
-      const max = 270; // approximate maximum atomic radius
-      const normalized = (element.atomicRadius ?? min - 10) / max;
-      return `hsl(${240 * normalized}, 80%, 65%)`;
-    } else if (colorScheme === 'frequency') {
-      // Color based on frequency - using a rainbow spectrum
-      // Map atomic number to a spectrum position
-      const normalizedPosition = (element.atomicNumber % 7) / 7;
-      // Rainbow spectrum from red to violet
-      const hue = normalizedPosition * 270; // 270 covers the visible spectrum
-      return `hsl(${hue}, 80%, 50%)`;
-    } else if (colorScheme === 'octave') {
-      // Color based on octave - group elements by periods
-      const period = getPeriodFromAtomicNumber(element.atomicNumber);
-      switch (period) {
-        case 1: return '#ffcccc'; // First period
-        case 2: return '#ffe0cc'; // Second period
-        case 3: return '#fff5cc'; // Third period
-        case 4: return '#e6ffcc'; // Fourth period
-        case 5: return '#ccf2ff'; // Fifth period
-        case 6: return '#ccd9ff'; // Sixth period
-        case 7: return '#e6ccff'; // Seventh period
-        default: return '#ffcce6'; // Eighth period or unknown
-      }
+    switch (colorScheme) {
+      case 'category': return getCategoryColor();
+      case 'state': return getStateColor();
+      case 'atomic-radius': return getAtomicRadiusColor();
+      case 'frequency': return getFrequencyColor();
+      case 'octave': return getOctaveColor();
+      default: return '#bfbfbf';
     }
-    
-    // Default color
-    return '#e0e0e0';
   };
 
-  // Helper function to determine an element's period from its atomic number
-  const getPeriodFromAtomicNumber = (atomicNumber: number): number => {
-    if (atomicNumber <= 2) return 1;
-    if (atomicNumber <= 10) return 2;
-    if (atomicNumber <= 18) return 3;
-    if (atomicNumber <= 36) return 4;
-    if (atomicNumber <= 54) return 5;
-    if (atomicNumber <= 86) return 6;
-    if (atomicNumber <= 118) return 7;
-    return 8;
+  // Helper functions for text color calculation
+  const calculateBrightness = (r: number, g: number, b: number) => {
+    return (r * 299 + g * 587 + b * 114) / 1000;
+  };
+  
+  const getContrastColor = (brightness: number) => {
+    return brightness > 128 ? '#000000' : '#ffffff';
+  };
+  
+  const parseRgbColor = (backgroundColor: string) => {
+    const rgbMatch = backgroundColor.match(/\d+/g);
+    if (rgbMatch && rgbMatch.length >= 3) {
+      const r = parseInt(rgbMatch[0], 10);
+      const g = parseInt(rgbMatch[1], 10);
+      const b = parseInt(rgbMatch[2], 10);
+      const brightness = calculateBrightness(r, g, b);
+      return getContrastColor(brightness);
+    }
+    return null;
+  };
+  
+  const parseHslColor = (backgroundColor: string) => {
+    const parts = backgroundColor.match(/\d+/g);
+    if (parts && parts.length >= 3) {
+      const lightness = parseInt(parts[2], 10);
+      return lightness > 60 ? '#000000' : '#ffffff';
+    }
+    return null;
+  };
+  
+  const parseHexColor = (backgroundColor: string) => {
+    const hex = backgroundColor.substring(1);
+    const r = parseInt(hex.substring(0, 2), 16);
+    const g = parseInt(hex.substring(2, 4), 16);
+    const b = parseInt(hex.substring(4, 6), 16);
+    const brightness = calculateBrightness(r, g, b);
+    return getContrastColor(brightness);
   };
 
-  // Get a complementary/secondary color based on the background color
+  // Calculate text color for optimal contrast with the background
   const getTextColor = (backgroundColor: string) => {
-    // For HSL colors, derive a complementary color with appropriate contrast
+    // Parse RGB values from different color formats
+    if (backgroundColor.startsWith('rgb')) {
+      return parseRgbColor(backgroundColor) ?? '#505050';
+    } 
+    
     if (backgroundColor.startsWith('hsl')) {
-      const parts = backgroundColor.match(/\d+/g);
-      if (parts && parts.length >= 3) {
-        const hue = parseInt(parts[0], 10);
-        const saturation = parseInt(parts[1], 10);
-        // Calculate complementary hue (180 degrees opposite on the color wheel)
-        const compHue = (hue + 180) % 360;
-        // Make sure text has enough contrast - darker for light backgrounds, lighter for dark backgrounds
-        const lightness = parseInt(parts[2], 10);
-        return lightness > 60 
-          ? `hsl(${compHue}, ${Math.min(saturation + 10, 100)}%, 25%)` // Darker complementary color
-          : `hsl(${compHue}, ${Math.max(saturation - 10, 20)}%, 85%)`; // Lighter complementary color
-      }
-      // Fallback if parsing fails
-      return '#505050';
-    }
+      return parseHslColor(backgroundColor) ?? '#505050';
+    } 
     
-    // For hex colors, use appropriate contrasting colors based on the background
     if (backgroundColor.startsWith('#')) {
-      // Create a mapping of background colors to appropriate text colors
-      const colorMap: { [key: string]: string } = {
-        // Category colors
-        '#ff8a65': '#663520', // Alkali metal
-        '#ffb74d': '#664927', // Alkaline earth metal
-        '#ffd54f': '#665620', // Transition metal
-        '#dce775': '#59611f', // Post-transition metal
-        '#aed581': '#495634', // Metalloid
-        '#4fc3f7': '#1f4f63', // Nonmetal
-        '#4dd0e1': '#1f555c', // Halogen
-        '#7986cb': '#313552', // Noble gas
-        '#ba68c8': '#4b2a51', // Lanthanoid
-        '#f06292': '#602839', // Actinoid
-        
-        // State colors
-        '#90caf9': '#395063', // Solid
-        '#80deea': '#335a5e', // Liquid
-        '#ef9a9a': '#5f3d3d', // Gas
-        
-        // Octave colors
-        '#ffcccc': '#664c4c', // First period
-        '#ffe0cc': '#665a51', // Second period
-        '#fff5cc': '#666351', // Third period
-        '#e6ffcc': '#596651', // Fourth period
-        '#ccf2ff': '#516266', // Fifth period
-        '#ccd9ff': '#515766', // Sixth period
-        '#e6ccff': '#5c5166', // Seventh period
-        '#ffcce6': '#664c5c', // Eighth period
-        
-        // Default
-        '#e0e0e0': '#505050'  // Default gray
-      };
-      
-      return colorMap[backgroundColor] || '#505050';
+      return parseHexColor(backgroundColor);
     }
     
-    // Fallback to standard colors if we can't determine a better match
+    // Default text color
     return '#505050';
   };
 

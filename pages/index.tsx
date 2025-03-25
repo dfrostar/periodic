@@ -2,16 +2,17 @@ import Head from 'next/head';
 import { useState } from 'react';
 import styles from '@/styles/Home.module.css';
 import PeriodicTable from '@/components/ui/PeriodicTable';
+import PeriodicTableHarmonic from '@/components/ui/PeriodicTableHarmonic';
 import ElementDetails from '@/components/ui/ElementDetails';
 import ControlPanel from '@/components/ui/ControlPanel';
 import { useElementStore } from '@/store/elementStore';
 
 export default function Home() {
-  const [viewMode, setViewMode] = useState<'2d' | '3d'>('2d');
+  const [viewMode, setViewMode] = useState<'2d' | '3d' | 'harmonic'>('2d');
   const [colorScheme, setColorScheme] = useState<string>('atomic-radius');
   const selectedElement = useElementStore(state => state.selectedElement);
 
-  const handleViewModeChange = (mode: '2d' | '3d') => {
+  const handleViewModeChange = (mode: '2d' | '3d' | 'harmonic') => {
     setViewMode(mode);
   };
 
@@ -35,15 +36,19 @@ export default function Home() {
         <ControlPanel 
           viewMode={viewMode}
           colorScheme={colorScheme}
-          onViewModeChange={handleViewModeChange}
+          onViewModeChange={(mode) => setViewMode(mode as '2d' | '3d' | 'harmonic')}
           onColorSchemeChange={handleColorSchemeChange}
         />
 
         <div className={styles.tableContainer}>
-          <PeriodicTable 
-            mode={viewMode}
-            colorScheme={colorScheme}
-          />
+          {viewMode === 'harmonic' ? (
+            <PeriodicTableHarmonic colorScheme={colorScheme} />
+          ) : (
+            <PeriodicTable 
+              mode={viewMode}
+              colorScheme={colorScheme}
+            />
+          )}
         </div>
 
         {selectedElement && (

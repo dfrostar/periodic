@@ -1,51 +1,156 @@
 .controlPanel {
-  background-color: var(--muted-background);
-  border-radius: var(--radius-lg);
-  padding: var(--spacing-4);
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  color: white;
+  background-color: rgba(15, 23, 42, 0.95);
+  border-radius: 8px;
+  padding: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-4);
+  gap: 16px;
+  max-height: 80vh;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(59, 130, 246, 0.5) rgba(15, 23, 42, 0.2);
+}
+
+.controlGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+  margin: 0 0 15px 0;
+}
+
+.controlColumn {
+  display: flex;
+  flex-direction: column;
 }
 
 .controlGroup {
+  margin: 0 0 10px 0;
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-2);
+  border: none;
+  padding: 0;
 }
 
-.controlGroup h3 {
-  font-size: 1rem;
+.panelTitle {
+  margin: 0 0 8px 0;
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #3b82f6;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #334155;
+}
+
+.controlSection {
+  margin-bottom: 16px;
+}
+
+.controlLabelText {
+  display: block;
+  font-size: 0.9rem;
   font-weight: 500;
-  margin-bottom: var(--spacing-1);
+  margin-bottom: 8px;
+  color: #94a3b8;
+  padding: 0;
+  border: none;
 }
 
 .buttonGroup {
   display: flex;
+  gap: 6px;
   flex-wrap: wrap;
-  gap: var(--spacing-2);
+  margin-bottom: 8px;
 }
 
 .controlButton {
-  padding: var(--spacing-2) var(--spacing-4);
-  background-color: var(--background);
-  color: var(--foreground);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-md);
+  background-color: #1e293b;
+  color: #e2e8f0;
+  border: 1px solid #334155;
+  border-radius: 4px;
+  padding: 6px 12px;
   font-size: 0.9rem;
-  transition: all 0.2s ease;
+  cursor: pointer;
+  transition: all 0.2s;
 }
 
 .controlButton:hover {
-  background-color: var(--primary);
-  color: white;
-  border-color: var(--primary);
+  background-color: #2d3748;
 }
 
 .controlButton.active {
-  background-color: var(--primary);
+  background-color: #3b82f6;
+  border-color: #2563eb;
   color: white;
-  border-color: var(--primary);
+}
+
+.colorButton {
+  background-color: rgba(48, 63, 84, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: white;
+  padding: 5px 8px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: all 0.2s;
+  text-align: center;
+}
+
+.colorButtonGroup {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 5px;
+}
+
+.visualizationControls {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.actionButton {
+  background-color: #1e293b;
+  color: #e2e8f0;
+  border: 1px solid #334155;
+  border-radius: 4px;
+  padding: 8px 16px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.actionButton:hover {
+  background-color: #2d3748;
+}
+
+.interactionHint {
+  background-color: rgba(30, 41, 59, 0.5);
+  border-radius: 6px;
+  padding: 10px;
+  margin-top: 8px;
+  font-size: 0.85rem;
+  color: #94a3b8;
+}
+
+.interactionHint p {
+  margin: 4px 0;
+}
+
+.legendSection {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.controlTip {
+  margin-top: 10px;
+  font-size: 0.8rem;
+  color: #a9c6de;
+  opacity: 0.8;
 }
 
 .controlInfo {
@@ -54,6 +159,39 @@
   font-size: 0.9rem;
   color: var(--muted);
   line-height: 1.5;
+}
+
+.controlLegend {
+  padding: 0;
+  border: none;
+  font-size: 1rem;
+  font-weight: 500;
+  margin-bottom: var(--spacing-1);
+}
+
+.controlGroup h3 {
+  font-size: 1rem;
+  font-weight: 500;
+  margin-bottom: var(--spacing-1);
+}
+
+/* Webkit scrollbar customization */
+.controlPanel::-webkit-scrollbar {
+  width: 8px;
+}
+
+.controlPanel::-webkit-scrollbar-track {
+  background: rgba(15, 23, 42, 0.2);
+  border-radius: 4px;
+}
+
+.controlPanel::-webkit-scrollbar-thumb {
+  background-color: rgba(59, 130, 246, 0.5);
+  border-radius: 4px;
+}
+
+.controlPanel::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(59, 130, 246, 0.7);
 }
 
 @media (max-width: 768px) {

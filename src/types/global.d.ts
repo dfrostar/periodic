@@ -5,6 +5,13 @@
 // Import React and JSX types
 import 'react';
 
+// Application-specific types
+declare global {
+  type ViewMode = '2d' | '3d' | 'r3f' | 'harmonic';
+  type VisualizationType = 'spiral' | 'table' | 'harmonic' | 'orbital';
+  type ColorScheme = 'category' | 'state' | 'atomic-radius' | 'frequency' | 'octave';
+}
+
 // Extend JSX namespace for custom elements if needed
 declare namespace JSX {
   interface IntrinsicElements {

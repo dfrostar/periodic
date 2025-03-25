@@ -32,3 +32,15 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# embedded repositories
+periodic-wiki/
+periodic.wiki/
+
+# sensitive files
+personal-access-token.txt
+**/personal-access-token.txt
+
+# backup files
+*-backup.*
+*.bundle

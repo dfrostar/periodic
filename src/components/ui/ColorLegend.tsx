@@ -10,7 +10,7 @@ const ColorLegend: React.FC<ColorLegendProps> = ({ colorScheme }) => {
   const renderLegendItems = () => {
     if (colorScheme === 'category') {
       return (
-        <>
+        <div className={styles.categoryLegend}>
           <div className={styles.legendItem}>
             <div className={styles.colorBox} style={{ backgroundColor: '#ff8a65' }}></div>
             <span>Alkali Metal</span>
@@ -51,11 +51,11 @@ const ColorLegend: React.FC<ColorLegendProps> = ({ colorScheme }) => {
             <div className={styles.colorBox} style={{ backgroundColor: '#f06292' }}></div>
             <span>Actinoid</span>
           </div>
-        </>
+        </div>
       );
     } else if (colorScheme === 'state') {
       return (
-        <>
+        <div className={styles.stateLegend}>
           <div className={styles.legendItem}>
             <div className={styles.colorBox} style={{ backgroundColor: '#90caf9' }}></div>
             <span>Solid</span>
@@ -72,14 +72,17 @@ const ColorLegend: React.FC<ColorLegendProps> = ({ colorScheme }) => {
             <div className={styles.colorBox} style={{ backgroundColor: '#e0e0e0' }}></div>
             <span>Unknown</span>
           </div>
-        </>
+        </div>
       );
     } else if (colorScheme === 'atomic-radius') {
       return (
         <div className={styles.gradientLegend}>
-          <div className={styles.gradientBar}></div>
+          <div className={styles.gradientBar} style={{
+            background: 'linear-gradient(to right, #b2ff59, #ffeb3b, #ff9800, #f44336)'
+          }}></div>
           <div className={styles.gradientLabels}>
             <span>Smaller</span>
+            <span>Medium</span>
             <span>Larger</span>
           </div>
         </div>
@@ -89,31 +92,31 @@ const ColorLegend: React.FC<ColorLegendProps> = ({ colorScheme }) => {
         <div className={styles.frequencyLegend}>
           <div className={styles.legendItem}>
             <div className={styles.colorBox} style={{ backgroundColor: '#ff0000' }}></div>
-            <span>Red (Lower Frequency)</span>
+            <span>Red (C - Do)</span>
           </div>
           <div className={styles.legendItem}>
             <div className={styles.colorBox} style={{ backgroundColor: '#ff8000' }}></div>
-            <span>Orange</span>
+            <span>Orange (D - Re)</span>
           </div>
           <div className={styles.legendItem}>
             <div className={styles.colorBox} style={{ backgroundColor: '#ffff00' }}></div>
-            <span>Yellow</span>
+            <span>Yellow (E - Mi)</span>
           </div>
           <div className={styles.legendItem}>
             <div className={styles.colorBox} style={{ backgroundColor: '#00ff00' }}></div>
-            <span>Green</span>
+            <span>Green (F - Fa)</span>
+          </div>
+          <div className={styles.legendItem}>
+            <div className={styles.colorBox} style={{ backgroundColor: '#00ffff' }}></div>
+            <span>Cyan (G - So)</span>
           </div>
           <div className={styles.legendItem}>
             <div className={styles.colorBox} style={{ backgroundColor: '#0000ff' }}></div>
-            <span>Blue</span>
+            <span>Blue (A - La)</span>
           </div>
           <div className={styles.legendItem}>
-            <div className={styles.colorBox} style={{ backgroundColor: '#4b0082' }}></div>
-            <span>Indigo</span>
-          </div>
-          <div className={styles.legendItem}>
-            <div className={styles.colorBox} style={{ backgroundColor: '#9400d3' }}></div>
-            <span>Violet (Higher Frequency)</span>
+            <div className={styles.colorBox} style={{ backgroundColor: '#8000ff' }}></div>
+            <span>Violet (B - Ti)</span>
           </div>
         </div>
       );

@@ -1,24 +1,61 @@
 import React, { useState } from 'react';
 import Head from 'next/head';
 import PeriodicTable from '@/components/ui/PeriodicTable';
+import PeriodicTable3D from '@/components/ui/PeriodicTable3D';
+import PeriodicTableR3F from '@/components/ui/PeriodicTableR3F';
 import ControlPanel from '@/components/ui/ControlPanel';
 import ElementDetails from '@/components/ui/ElementDetails';
 import AtomicStructure from '@/components/ui/AtomicStructure';
 import { useElementStore } from '@/store/elementStore';
 import styles from '@/styles/Home.module.css';
 
+// Type definitions
+type ViewMode = '2d' | '3d' | 'r3f' | 'harmonic';
+type VisualizationType = 'spiral' | 'table' | 'harmonic' | 'orbital';
+type ColorScheme = 'category' | 'state' | 'atomic-radius' | 'frequency' | 'octave';
+
 /**
  * Home page component for the Periodic Table Visualization
  * Manages view mode and color scheme state
  */
 export default function Home() {
-  const [viewMode, setViewMode] = useState<'2d' | '3d' | 'harmonic'>('2d');
-  const [colorScheme, setColorScheme] = useState<string>('category');
+  const [viewMode, setViewMode] = useState<ViewMode>('r3f');
+  const [colorScheme, setColorScheme] = useState<ColorScheme>('category');
+  const [visualizationType, setVisualizationType] = useState<VisualizationType>('spiral');
+  const [showControls, setShowControls] = useState<boolean>(true);
+  const [controlPanelPosition, setControlPanelPosition] = useState<'left' | 'right'>('right');
   const selectedElement = useElementStore(state => state.selectedElement);
 
   // Handler for view mode changes
-  const handleViewModeChange = (mode: '2d' | '3d' | 'harmonic') => {
+  const handleViewModeChange = (mode: ViewMode) => {
     setViewMode(mode);
+    
+    // Set appropriate visualization type when view mode changes
+    if (mode === 'harmonic') {
+      setVisualizationType('harmonic');
+    } else if (mode === '2d') {
+      // Keep the current visualization type for other modes
+    }
+  };
+
+  // Handler for visualization type changes
+  const handleVisualizationTypeChange = (type: VisualizationType) => {
+    setVisualizationType(type);
+  };
+
+  // Handler for color scheme changes
+  const handleColorSchemeChange = (scheme: ColorScheme) => {
+    setColorScheme(scheme);
+  };
+
+  // Toggle controls panel visibility
+  const toggleControls = () => {
+    setShowControls(!showControls);
+  };
+
+  // Toggle control panel position
+  const toggleControlPanelPosition = () => {
+    setControlPanelPosition(prev => prev === 'right' ? 'left' : 'right');
   };
 
   return (
@@ -30,54 +67,96 @@ export default function Home() {
       </Head>
 
       <main className={styles.main}>
-        <header className={styles.header}>
-          <h1 className={styles.title}>Interactive Periodic Table</h1>
-          <p className={styles.description}>
-            Explore the periodic table in 2D and 3D visualizations
-          </p>
-        </header>
+        {/* Toggle Button for Controls */}
+        <button 
+          className={styles.controlToggle}
+          onClick={toggleControls}
+          aria-expanded={showControls}
+          aria-controls="controls-panel"
+        >
+          {showControls ? 'Hide Controls' : 'Show Controls'}
+        </button>
 
-        <div className={styles.grid}>
-          {/* Controls Box */}
-          <div className={`${styles.componentBox} ${styles.controls}`}>
-            <h2>Controls</h2>
-            <ControlPanel
-              viewMode={viewMode}
-              colorScheme={colorScheme}
-              onViewModeChange={handleViewModeChange}
-              onColorSchemeChange={setColorScheme}
-            />
-          </div>
+        {/* Toggle Button for Control Panel Position */}
+        {showControls && (
+          <button 
+            className={styles.positionToggle}
+            onClick={toggleControlPanelPosition}
+            aria-label={`Move panel to ${controlPanelPosition === 'right' ? 'left' : 'right'} side`}
+          >
+            Move to {controlPanelPosition === 'right' ? 'Left' : 'Right'}
+          </button>
+        )}
 
-          {/* Table Box */}
-          <div className={`${styles.componentBox} ${styles.tableWrapper}`}>
-            <PeriodicTable mode={viewMode} colorScheme={colorScheme} />
-          </div>
+        {/* Side Control Panel */}
+        {showControls && (
+          <ControlPanel
+            viewMode={viewMode}
+            colorScheme={colorScheme}
+            visualizationType={visualizationType}
+            onViewModeChange={handleViewModeChange}
+            onColorSchemeChange={handleColorSchemeChange}
+            onVisualizationTypeChange={handleVisualizationTypeChange}
+            position={controlPanelPosition}
+            onTogglePosition={toggleControlPanelPosition}
+          />
+        )}
 
-          {/* Element Details Box */}
-          <div className={`${styles.componentBox} ${styles.detailsWrapper}`}>
-            <h2>Element Details</h2>
-            <ElementDetails />
-          </div>
-          
-          {/* Atomic Structure Box */}
-          <div className={`${styles.componentBox} ${styles.atomicModelWrapper}`}>
-            <h2>Atomic Structure</h2>
-            {selectedElement ? (
-              <AtomicStructure element={selectedElement} />
-            ) : (
-              <div className={styles.placeholder}>
-                <p>Select an element to view its atomic structure</p>
-              </div>
+        {/* Main Content Area */}
+        <div className={styles.contentArea}>
+          <header className={styles.header}>
+            <h1 className={styles.title}>Interactive Periodic Table</h1>
+            <p className={styles.description}>
+              Explore the periodic table in advanced 2D and 3D visualizations
+            </p>
+          </header>
+
+          <div className={styles.periodicTableContainer}>
+            {viewMode === '2d' && (
+              <PeriodicTable 
+                mode={viewMode} 
+                colorScheme={colorScheme} 
+              />
+            )}
+            {viewMode === '3d' && (
+              <PeriodicTable3D 
+                colorScheme={colorScheme}
+                visualizationType={visualizationType}
+              />
+            )}
+            {viewMode === 'r3f' && (
+              <PeriodicTableR3F 
+                colorScheme={colorScheme}
+                visualizationType={visualizationType}
+              />
+            )}
+            {viewMode === 'harmonic' && (
+              <PeriodicTable3D 
+                colorScheme={colorScheme}
+                visualizationType="harmonic"
+              />
             )}
           </div>
+
+          {selectedElement && (
+            <div className={styles.detailsContainer}>
+              <div className={styles.elementDetailsPanel}>
+                <h2>Element Details</h2>
+                <ElementDetails />
+              </div>
+              <div className={styles.atomicStructurePanel}>
+                <h2>Atomic Structure</h2>
+                <AtomicStructure element={selectedElement} />
+              </div>
+            </div>
+          )}
         </div>
       </main>
 
       <footer className={styles.footer}>
         <p>
           Data sourced from public domain periodic table resources. 
-          Built with Next.js, React, and Three.js.
+          Built with Next.js, React, Three.js, and React Three Fiber.
         </p>
       </footer>
     </div>

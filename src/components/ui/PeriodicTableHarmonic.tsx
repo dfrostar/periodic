@@ -169,9 +169,80 @@ const PeriodicTableHarmonic: React.FC<PeriodicTableHarmonicProps> = ({ colorSche
     };
   };
 
-  // Helper function to get element color based on note and octave
-  const getElementColor = (element: Element): { color: string, opacity: number } => {
-    const { note, octave } = mapElementToNoteAndOctave(element.atomicNumber);
+  // Color helper functions to reduce complexity
+  const getCategoryColor = (category: string): { color: string, opacity: number } => {
+    switch (category) {
+      case 'alkali metal': return { color: '#ff8a65', opacity: 1 };
+      case 'alkaline earth metal': return { color: '#ffb74d', opacity: 1 };
+      case 'transition metal': return { color: '#ffd54f', opacity: 1 };
+      case 'post-transition metal': return { color: '#dce775', opacity: 1 };
+      case 'metalloid': return { color: '#aed581', opacity: 1 };
+      case 'nonmetal': return { color: '#4fc3f7', opacity: 1 };
+      case 'halogen': return { color: '#4dd0e1', opacity: 1 };
+      case 'noble gas': return { color: '#7986cb', opacity: 1 };
+      case 'lanthanide': return { color: '#9575cd', opacity: 1 };
+      case 'actinide': return { color: '#ba68c8', opacity: 1 };
+      default: return { color: '#e0e0e0', opacity: 1 };
+    }
+  };
+
+  const getRadiusColor = (radius: number): { color: string, opacity: number } => {
+    const normalizedRadius = Math.min(Math.max(radius / 250, 0), 1);
+    const hue = 240; // Blue hue
+    const saturation = 100;
+    const lightness = Math.floor(80 - (normalizedRadius * 60));
+    return {
+      color: `hsl(${hue}, ${saturation}%, ${lightness}%)`,
+      opacity: 0.8 + (normalizedRadius * 0.2)
+    };
+  };
+
+  const getFrequencyColor = (atomicNumber: number): { color: string, opacity: number } => {
+    // Map atomic number to visible light spectrum (roughly 400-700nm)
+    const wavelength = 400 + (atomicNumber / 118) * 300;
+    // Convert wavelength to RGB (approximate)
+    let r, g, b;
+    
+    if (wavelength >= 400 && wavelength < 450) {
+      r = -(wavelength - 450) / 50;
+      g = 0;
+      b = 1;
+    } else if (wavelength >= 450 && wavelength < 490) {
+      r = 0;
+      g = (wavelength - 450) / 40;
+      b = 1;
+    } else if (wavelength >= 490 && wavelength < 510) {
+      r = 0;
+      g = 1;
+      b = -(wavelength - 510) / 20;
+    } else if (wavelength >= 510 && wavelength < 580) {
+      r = (wavelength - 510) / 70;
+      g = 1;
+      b = 0;
+    } else if (wavelength >= 580 && wavelength < 645) {
+      r = 1;
+      g = -(wavelength - 645) / 65;
+      b = 0;
+    } else {
+      r = 1;
+      g = 0;
+      b = 0;
+    }
+
+    // Convert to hex
+    const toHex = (c: number) => {
+      const hex = Math.floor(Math.max(0, Math.min(c, 1)) * 255).toString(16);
+      return hex.length === 1 ? '0' + hex : hex;
+    };
+    
+    return { 
+      color: `#${toHex(r)}${toHex(g)}${toHex(b)}`,
+      opacity: 0.9
+    };
+  };
+
+  const getNoteColor = (atomicNumber: number): { color: string, opacity: number } => {
+    const { note, octave } = mapElementToNoteAndOctave(atomicNumber);
     
     // Use color based on musical note
     const noteColors: Record<string, string> = {
@@ -189,12 +260,49 @@ const PeriodicTableHarmonic: React.FC<PeriodicTableHarmonicProps> = ({ colorSche
       'B': '#CC00FF', // Magenta
     };
     
-    const color = noteColors[note] || '#FFFFFF';
+    const color = noteColors[note] ?? '#FFFFFF';
     
     // Adjust opacity based on octave for visual depth
     const opacity = Math.min(0.6 + (octave * 0.05), 1.0);
     
     return { color, opacity };
+  };
+
+  const getOctaveColor = (period: number): { color: string, opacity: number } => {
+    const hue = (period - 1) * 40; // 40 degrees of hue per period
+    return { 
+      color: `hsl(${hue}, 80%, 60%)`, 
+      opacity: 0.9
+    };
+  };
+
+  // Helper function to get element color based on the selected scheme
+  const getElementColor = (element: Element): { color: string, opacity: number } => {
+    // State colors defined outside case blocks to avoid lint warnings
+    const stateColors: Record<string, string> = {
+      'solid': '#4fc3f7', // blue
+      'liquid': '#ff9800', // orange
+      'gas': '#e91e63',  // pink
+      'unknown': '#9e9e9e' // gray
+    };
+    
+    switch (colorScheme) {
+      case 'category':
+        return getCategoryColor(element.category);
+      case 'state': {
+        const state = element.state || 'unknown';
+        return { color: stateColors[state] || '#9e9e9e', opacity: 0.9 };
+      }
+      case 'atomic-radius':
+        return getRadiusColor(element.atomicRadius ?? 150);
+      case 'frequency':
+        return getFrequencyColor(element.atomicNumber);
+      case 'octave':
+        return getOctaveColor(element.period ?? 1);
+      default:
+        // Default to musical note coloring
+        return getNoteColor(element.atomicNumber);
+    }
   };
 
   // Helper function to get contrasting text color
@@ -533,7 +641,7 @@ const PeriodicTableHarmonic: React.FC<PeriodicTableHarmonicProps> = ({ colorSche
       
       if (context) {
         // Fill background with element color
-        const { color, opacity } = getElementColor(element);
+        const { color } = getElementColor(element);
         context.fillStyle = color;
         context.fillRect(0, 0, canvas.width, canvas.height);
         
@@ -560,43 +668,43 @@ const PeriodicTableHarmonic: React.FC<PeriodicTableHarmonicProps> = ({ colorSche
         const materials = [
           new THREE.MeshPhongMaterial({ 
             map: texture,
-            transparent: opacity < 1,
-            opacity,
+            transparent: true,
+            opacity: 0.9,
             shininess: 30,
             specular: 0x333333
           }),
           new THREE.MeshPhongMaterial({ 
             map: texture,
-            transparent: opacity < 1,
-            opacity,
+            transparent: true,
+            opacity: 0.9,
             shininess: 30,
             specular: 0x333333
           }),
           new THREE.MeshPhongMaterial({ 
             map: texture,
-            transparent: opacity < 1,
-            opacity,
+            transparent: true,
+            opacity: 0.9,
             shininess: 30,
             specular: 0x333333
           }),
           new THREE.MeshPhongMaterial({ 
             map: texture,
-            transparent: opacity < 1,
-            opacity,
+            transparent: true,
+            opacity: 0.9,
             shininess: 30,
             specular: 0x333333
           }),
           new THREE.MeshPhongMaterial({ 
             map: texture,
-            transparent: opacity < 1,
-            opacity,
+            transparent: true,
+            opacity: 0.9,
             shininess: 30,
             specular: 0x333333
           }),
           new THREE.MeshPhongMaterial({ 
             map: texture,
-            transparent: opacity < 1,
-            opacity,
+            transparent: true,
+            opacity: 0.9,
             shininess: 30,
             specular: 0x333333
           })
@@ -848,7 +956,7 @@ const PeriodicTableHarmonic: React.FC<PeriodicTableHarmonicProps> = ({ colorSche
 
   // Render element cell with appropriate styling and proper accessibility
   const renderElementCell = (element: Element) => {
-    const { color, opacity } = getElementColor(element);
+    const { color } = getElementColor(element);
     const textColor = getContrastingTextColor(color);
     const { note, octave } = mapElementToNoteAndOctave(element.atomicNumber);
     
@@ -861,7 +969,6 @@ const PeriodicTableHarmonic: React.FC<PeriodicTableHarmonicProps> = ({ colorSche
         className={`${styles.elementCell} ${isPlaying ? styles.currentlyPlaying : ''}`}
         style={{
           backgroundColor: color,
-          opacity,
           color: textColor,
           border: 'none',
           cursor: 'pointer',

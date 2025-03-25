@@ -1,0 +1,57 @@
+.collapsiblePanel {
+  position: relative;
+  z-index: 1001;
+  margin: 0;
+  width: 100%;
+  background-color: rgba(30, 41, 59, 0.9);
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 15px;
+  background-color: rgba(25, 35, 50, 0.95);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.title {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 500;
+  color: white;
+}
+
+.toggleButton {
+  width: 100%;
+  background-color: rgba(0, 112, 243, 0.5);
+  border: none;
+  color: white;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  padding: 10px 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.arrowIcon {
+  margin-left: 8px;
+}
+
+.toggleButton:hover {
+  background-color: rgba(0, 112, 243, 0.7);
+}
+
+.panelContent {
+  padding: 12px;
+  background-color: rgba(30, 41, 59, 0.8);
+  color: white;
+}

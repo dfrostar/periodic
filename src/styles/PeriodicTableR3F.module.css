@@ -1,0 +1,562 @@
+.container {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  background: linear-gradient(to bottom, #000000, #0a192f);
+  overflow: hidden;
+}
+
+.canvas {
+  width: 100%;
+  height: 100%;
+}
+
+.controlsPanel {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: rgba(13, 17, 23, 0.8);
+  backdrop-filter: blur(10px);
+  border-radius: 12px;
+  padding: 15px;
+  color: white;
+  width: 280px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  z-index: 10;
+  transition: all 0.3s ease;
+}
+
+.controlGroup {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+
+.controlGroup label {
+  display: block;
+  margin-bottom: 8px;
+  color: #e2e8f0;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.select {
+  width: 100%;
+  padding: 8px 12px;
+  background-color: rgba(30, 41, 59, 0.8);
+  border: 1px solid rgba(100, 116, 139, 0.5);
+  border-radius: 6px;
+  color: white;
+  font-size: 14px;
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+.select:hover, .select:focus {
+  border-color: #60a5fa;
+  box-shadow: 0 0 0 2px rgba(96, 165, 250, 0.2);
+}
+
+.toggleControls {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background: rgba(30, 41, 59, 0.8);
+  backdrop-filter: blur(10px);
+  border: none;
+  color: white;
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  z-index: 10;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.toggleControls:hover {
+  background: rgba(51, 65, 85, 0.9);
+  transform: translateY(-1px);
+}
+
+.toggleControls:active {
+  transform: translateY(1px);
+}
+
+.legendContainer {
+  margin-top: 20px;
+  padding-top: 15px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .controlsPanel {
+    width: 100%;
+    max-width: 100%;
+    bottom: 0;
+    top: auto;
+    left: 0;
+    right: 0;
+    border-radius: 12px 12px 0 0;
+  }
+  
+  .toggleControls {
+    bottom: 10px;
+    top: auto;
+  }
+}
+
+/* Animation for controls panel */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.controlsPanel {
+  animation: fadeIn 0.3s ease-out forwards;
+}
+
+/* Styles for element details */
+.elementDetail {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(13, 17, 23, 0.8);
+  backdrop-filter: blur(10px);
+  border-radius: 12px;
+  padding: 20px;
+  color: white;
+  max-width: 500px;
+  width: 90%;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  z-index: 10;
+  transition: all 0.3s ease;
+}
+
+.elementName {
+  font-size: 24px;
+  margin-bottom: 10px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+}
+
+.elementSymbol {
+  font-size: 36px;
+  margin-right: 12px;
+  background: linear-gradient(45deg, #60a5fa, #3b82f6);
+  -webkit-background-clip: text;
+  color: transparent;
+  background-clip: text;
+}
+
+.elementProps {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.propItem {
+  display: flex;
+  flex-direction: column;
+}
+
+.propLabel {
+  font-size: 12px;
+  color: #94a3b8;
+  margin-bottom: 3px;
+}
+
+.propValue {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+/* Loading animation */
+.loadingContainer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.7);
+  z-index: 100;
+}
+
+.loadingSpinner {
+  border: 4px solid rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  border-top: 4px solid #3b82f6;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Add styles for the inline controls */
+.inlineControls {
+  margin: 10px 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  border-radius: 8px;
+  padding: 10px;
+  width: fit-content;
+}
+
+.controlButton {
+  background-color: rgba(30, 41, 59, 0.5);
+  color: #cbd5e1;
+  border: 1px solid rgba(100, 116, 139, 0.3);
+  border-radius: 6px;
+  padding: 6px 10px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.controlButton:hover {
+  background-color: rgba(51, 65, 85, 0.7);
+  border-color: rgba(148, 163, 184, 0.5);
+}
+
+.activeButton {
+  background-color: rgba(59, 130, 246, 0.7);
+  color: white;
+  border-color: rgba(59, 130, 246, 0.8);
+}
+
+/* Add styles for the control panel overlay */
+.controlPanelOverlay {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  max-width: 320px;
+  z-index: 10;
+}
+
+.controlsContainer {
+  background-color: rgba(15, 23, 42, 0.9);
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(8px);
+  overflow: hidden;
+  margin-top: 10px;
+}
+
+.controlsHeader {
+  padding: 12px 16px;
+  background-color: rgba(30, 41, 59, 0.8);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.controlsHeader h3 {
+  color: #e2e8f0;
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+  text-align: center;
+}
+
+.controlsBody {
+  padding: 16px;
+}
+
+.buttonGroup {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.toggleButton {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 36px;
+  height: 36px;
+  background-color: rgba(30, 41, 59, 0.9);
+  color: #e2e8f0;
+  border: none;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 20px;
+  font-weight: bold;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  z-index: 20;
+  transition: all 0.2s ease;
+}
+
+.toggleButton:hover {
+  background-color: rgba(51, 65, 85, 0.9);
+}
+
+.infoPanel {
+  margin-top: 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding-top: 16px;
+}
+
+.instructions {
+  margin-top: 16px;
+}
+
+.instructions h4 {
+  color: #e2e8f0;
+  margin: 0 0 8px 0;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.instructions ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.instructions li {
+  color: #cbd5e1;
+  font-size: 0.8rem;
+  padding: 4px 0;
+}
+
+/* 3D Legend Styles */
+.threeDLegend {
+  font-family: Arial, sans-serif;
+  color: #ffffff;
+  font-size: 0.8rem;
+  max-width: 180px;
+  max-height: 300px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  transform: scale(0.85);
+  transform-origin: top left;
+}
+
+.threeDLegend h4 {
+  margin: 0 0 8px 0;
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-align: center;
+  color: #e2e8f0;
+  text-shadow: 0 0 5px rgba(0, 0, 0, 0.7);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+  padding-bottom: 5px;
+}
+
+.threeDLegend :global(.legendContainer) {
+  margin: 0;
+  padding: 0;
+  border: none;
+}
+
+.threeDLegend :global(.legendItems) {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.threeDLegend :global(.legendItem) {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.75rem;
+}
+
+.threeDLegend :global(.colorBox) {
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+  flex-shrink: 0;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.threeDLegend :global(.legendTitle) {
+  display: none;
+}
+
+/* Make the 3D legend responsive */
+@media (max-width: 768px) {
+  .threeDLegend {
+    transform: scale(0.75);
+  }
+}
+
+/* Special 3D Legend styles - combined with previous styles */
+.threeDLegend {
+  width: 100%;
+  font-size: 0.9em;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.threeDLegend h4 {
+  margin-top: 0;
+  margin-bottom: 10px;
+  font-size: 16px;
+  color: #ffffff;
+  text-align: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  padding-bottom: 8px;
+}
+
+/* Element label that shows above each cube */
+.elementLabel {
+  color: #ffffff;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-shadow: 0 0 4px rgba(0, 0, 0, 0.8), 0 0 8px rgba(0, 0, 0, 0.6);
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0.9;
+}
+
+/* Enhanced element info container */
+.elementInfo {
+  position: absolute;
+  padding: 8px 10px;
+  background-color: rgba(10, 25, 47, 0.85);
+  color: #ffffff;
+  border-radius: 8px;
+  border: 1px solid rgba(100, 100, 255, 0.4);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  font-size: 0.75rem;
+  transition: all 0.2s ease;
+  z-index: 100;
+  backdrop-filter: blur(4px);
+  transform: scale(0.85);
+  transform-origin: center;
+  width: 150px;
+  pointer-events: none;
+}
+
+.elementInfo h3 {
+  margin: 0 0 5px 0;
+  font-size: 0.95rem;
+  text-align: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  padding-bottom: 4px;
+}
+
+.elementInfo p {
+  margin: 3px 0;
+  display: flex;
+  justify-content: space-between;
+}
+
+.elementInfo .property {
+  color: #a3b8d9;
+  font-weight: 500;
+}
+
+.elementInfo .value {
+  color: #ffffff;
+  font-weight: 400;
+  text-align: right;
+}
+
+.elementInfo .category {
+  margin-top: 6px;
+  text-align: center;
+  padding: 3px 0;
+  border-radius: 4px;
+  background-color: rgba(255, 255, 255, 0.15);
+  font-size: 0.7rem;
+  text-transform: capitalize;
+}
+
+/* Selected Element Panel */
+.selectedElementPanel {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  background-color: rgba(20, 30, 40, 0.85);
+  border-radius: 8px;
+  padding: 15px;
+  width: 300px;
+  color: #f0f0f0;
+  border: 1px solid rgba(100, 100, 255, 0.5);
+  box-shadow: 0 0 15px rgba(0, 0, 100, 0.4);
+  z-index: 100;
+  max-height: 500px;
+  overflow-y: auto;
+}
+
+.selectedElementPanel h3 {
+  margin-top: 0;
+  margin-bottom: 10px;
+  font-size: 18px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  padding-bottom: 8px;
+  text-align: center;
+}
+
+.selectedElementPanel h2 {
+  font-size: 24px;
+  margin: 10px 0;
+  text-align: center;
+  color: #ffffff;
+}
+
+.elementProperties {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin-bottom: 15px;
+}
+
+.elementProperties p {
+  margin: 0;
+  display: flex;
+  justify-content: space-between;
+  padding: 4px 0;
+  border-bottom: 1px dotted rgba(255, 255, 255, 0.1);
+}
+
+.elementProperties strong {
+  color: #90caf9;
+}
+
+.elementColorBox {
+  width: 100%;
+  height: 30px;
+  border-radius: 4px;
+  margin: 10px 0;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.5);
+}
+
+.noElementMessage {
+  font-style: italic;
+  text-align: center;
+  color: #aaaaaa;
+  margin: 20px 0;
+}
+
+.panelLegend {
+  margin-top: 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  padding-top: 10px;
+}

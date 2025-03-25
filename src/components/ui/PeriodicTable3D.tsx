@@ -4,15 +4,17 @@ import styles from '@/styles/PeriodicTable3D.module.css';
 import { Element } from '@/types/element';
 import { useElementStore } from '@/store/elementStore';
 import AtomicStructure from './AtomicStructure';
+import ColorLegend from './ColorLegend';
 
 // Type for visualization modes
-type VisualizationType = 'spiral' | 'table' | 'harmonic';
-type ColorScheme = 'category' | 'state' | 'note' | 'electroneg';
+type VisualizationType = 'spiral' | 'table' | 'harmonic' | 'orbital';
+type ColorScheme = 'category' | 'state' | 'atomic-radius' | 'frequency' | 'octave';
 
 // Interface for the component props
 interface PeriodicTable3DProps {
   elements?: Element[];
-  colorScheme?: string;
+  colorScheme?: ColorScheme;
+  visualizationType?: VisualizationType;
 }
 
 // Custom camera controls class to replace OrbitControls
@@ -167,7 +169,7 @@ const periodicTableData = {
       period: 1,
       block: "s",
       electronConfiguration: "1s1",
-      state: "gas" as const,
+      state: "gas",
       electronegativity: 2.2
     },
     {
@@ -180,16 +182,15 @@ const periodicTableData = {
       period: 1,
       block: "s",
       electronConfiguration: "1s2",
-      state: "gas" as const,
+      state: "gas",
       electronegativity: null
     },
     // ...more elements would be included here
   ] as Element[]
 };
 
-// 3D table layout positions
-const getElementPosition = (atomicNumber: number) => {
-  // For spiral layout
+// 3D table layout position helper functions
+const getSpiralPosition = (atomicNumber: number) => {
   if (atomicNumber <= 18) {
     // Place the first 18 elements in a circle
     const angle = (atomicNumber / 18) * Math.PI * 2;
@@ -198,230 +199,279 @@ const getElementPosition = (atomicNumber: number) => {
     const y = Math.sin(angle) * radius;
     return new THREE.Vector3(x, y, 0);
   } else {
-    // Place remaining elements in expanding spiral
-    const angle = (atomicNumber / 18) * Math.PI * 2;
-    const radius = 5 + Math.floor(atomicNumber / 18) * 1.5;
-    const x = Math.cos(angle) * radius;
-    const y = Math.sin(angle) * radius;
+    // Place the rest in an outward spiral
+    const turns = 2; // Number of turns in the spiral
+    const theta = (atomicNumber / 118) * turns * Math.PI * 2;
+    const radius = 5 + (atomicNumber - 18) * 0.1;
+    const x = Math.cos(theta) * radius;
+    const y = Math.sin(theta) * radius;
     return new THREE.Vector3(x, y, 0);
   }
 };
 
+const getTablePosition = (atomicNumber: number) => {
+  // Conventional periodic table layout
+  const element = periodicTableData.elements.find(e => e.atomicNumber === atomicNumber);
+  if (!element) return new THREE.Vector3(0, 0, 0);
+  
+  const group = element.group || 0;
+  const period = element.period || 0;
+  
+  // Apply offsets for lanthanides and actinides
+  const x = group;
+  const y = -period;
+  
+  return new THREE.Vector3(x, y, 0);
+};
+
+const getHarmonicPosition = (atomicNumber: number) => {
+  // Musical harmonic layout based on note frequencies
+  const noteIndex = atomicNumber % 12; // Maps to 12 musical notes
+  const octave = Math.floor(atomicNumber / 12);
+  
+  // Use a circle of fifths layout
+  const angle = (noteIndex / 12) * Math.PI * 2;
+  const radius = 4 + octave * 0.8;
+  const x = Math.cos(angle) * radius;
+  const y = Math.sin(angle) * radius;
+  const z = octave * 0.5; // Slight elevation for higher octaves
+  
+  return new THREE.Vector3(x, y, z);
+};
+
+const getOrbitalPosition = (atomicNumber: number) => {
+  // Orbital layout based on electron configuration
+  const element = periodicTableData.elements.find(e => e.atomicNumber === atomicNumber);
+  if (!element) return new THREE.Vector3(0, 0, 0);
+  
+  const electronConfiguration = element.electronConfiguration;
+  const orbitals = electronConfiguration.split(' ');
+  const orbitalIndex = orbitals.findIndex(orbital => 
+    orbital.includes('s') || orbital.includes('p') || 
+    orbital.includes('d') || orbital.includes('f')
+  );
+  
+  if (orbitalIndex === -1) return new THREE.Vector3(0, 0, 0);
+  
+  // Use the orbital type to position elements
+  const currentOrbital = orbitals[orbitalIndex];
+  const radius = orbitalIndex * 2;
+  const angle = atomicNumber * Math.PI / 18;
+  const x = radius * Math.cos(angle);
+  const y = radius * Math.sin(angle);
+  
+  // Determine z position based on orbital type
+  let z = 0;
+  if (currentOrbital.includes('p')) {
+    z = 1;
+  } else if (currentOrbital.includes('d')) {
+    z = 2;
+  } else if (currentOrbital.includes('f')) {
+    z = 3;
+  }
+  
+  return new THREE.Vector3(x, y, z);
+};
+
+// Main element position function with reduced complexity
+const getElementPosition = (atomicNumber: number, visualizationType: VisualizationType) => {
+  switch (visualizationType) {
+    case 'spiral': 
+      return getSpiralPosition(atomicNumber);
+    case 'table': 
+      return getTablePosition(atomicNumber);
+    case 'harmonic': 
+      return getHarmonicPosition(atomicNumber);
+    case 'orbital': 
+      return getOrbitalPosition(atomicNumber);
+    default: 
+      return new THREE.Vector3(0, 0, 0);
+  }
+};
+
 // Get element color based on scheme
-const getElementColor = (element: Element, scheme: ColorScheme) => {
+const getElementColor = (element: Element, scheme: string) => {
+  // Color based on category (default)
   if (scheme === 'category') {
     switch (element.category) {
-      case 'alkali metal': return new THREE.Color(0xff8a65);
-      case 'alkaline earth metal': return new THREE.Color(0xffb74d);
-      case 'transition metal': return new THREE.Color(0xffd54f);
-      case 'post-transition metal': return new THREE.Color(0xdce775);
-      case 'metalloid': return new THREE.Color(0xaed581);
-      case 'nonmetal': return new THREE.Color(0x4fc3f7);
-      case 'halogen': return new THREE.Color(0x4dd0e1);
-      case 'noble gas': return new THREE.Color(0x7986cb);
-      case 'lanthanoid': return new THREE.Color(0xba68c8);
-      case 'actinoid': return new THREE.Color(0xf06292);
-      default: return new THREE.Color(0xe0e0e0);
+      case 'alkali metal': 
+      case 'alkali-metal': return new THREE.Color('#ff4c4c'); // Consistent red
+      case 'alkaline earth metal': 
+      case 'alkaline-earth-metal': return new THREE.Color('#ff9999'); // Consistent light red
+      case 'transition metal': 
+      case 'transition-metal': return new THREE.Color('#ffb86c'); // Consistent orange
+      case 'post-transition metal': 
+      case 'post-transition-metal': return new THREE.Color('#8be9fd'); // Consistent light blue
+      case 'metalloid': return new THREE.Color('#bd93f9'); // Consistent purple
+      case 'nonmetal': return new THREE.Color('#0096FF'); // Consistent blue
+      case 'halogen': return new THREE.Color('#ff79c6'); // Consistent pink
+      case 'noble gas': 
+      case 'noble-gas': return new THREE.Color('#5cb3cc'); // Consistent light blue
+      case 'lanthanoid': return new THREE.Color('#50fa7b'); // Consistent green
+      case 'actinoid': return new THREE.Color('#94e2d5'); // Consistent teal
+      default: return new THREE.Color('#bfbfbf'); // Consistent gray
     }
-  } else if (scheme === 'state') {
+  } 
+  // Color based on physical state
+  else if (scheme === 'state') {
     switch (element.state) {
-      case 'solid': return new THREE.Color(0x90caf9);
-      case 'liquid': return new THREE.Color(0x80deea);
-      case 'gas': return new THREE.Color(0xef9a9a);
-      default: return new THREE.Color(0xe0e0e0);
+      case 'solid': return new THREE.Color('#FFB861'); // Match ElementTile solid color
+      case 'liquid': return new THREE.Color('#6495ED'); // Match ElementTile liquid color
+      case 'gas': return new THREE.Color('#63E2FF'); // Match ElementTile gas color
+      default: return new THREE.Color('#bfbfbf');
     }
-  } else if (scheme === 'note') {
-    // Color based on musical notes (using 7 colors for 7 notes)
-    const noteIndex = element.atomicNumber % 7;
-    const colors = [
-      0xff0000, // C - Red
-      0xff7f00, // D - Orange
-      0xffff00, // E - Yellow
-      0x00ff00, // F - Green
-      0x0000ff, // G - Blue
-      0x4b0082, // A - Indigo
-      0x9400d3  // B - Violet
+  } 
+  // Color based on atomic radius
+  else if (scheme === 'atomic-radius') {
+    // Use atomic radius for color
+    const radius = element.atomicRadius ?? element.atomicMass / 10; // Fallback to atomicMass
+    const normalizedRadius = Math.min(Math.max((radius - 30) / 200, 0), 1); // Match ElementTile normalization
+    
+    // Color gradient from blue to red (matching ElementTile)
+    const r = Math.floor(normalizedRadius * 255);
+    const g = Math.floor((1 - Math.abs(normalizedRadius - 0.5) * 2) * 255);
+    const b = Math.floor((1 - normalizedRadius) * 255);
+    
+    return new THREE.Color(`rgb(${r}, ${g}, ${b})`);
+  }
+  // Color based on frequency
+  else if (scheme === 'frequency') {
+    // Map to musical note colors (C to B) - matching ElementTile with 12 notes
+    const noteIndex = element.atomicNumber % 12;
+    const noteColors = [
+      "#ff0000", // C (red)
+      "#ff4e00", // C#
+      "#ff9900", // D
+      "#ffe100", // D#
+      "#ccff00", // E
+      "#66ff00", // F
+      "#00ff66", // F#
+      "#00ffcc", // G
+      "#00ccff", // G#
+      "#0066ff", // A
+      "#4c00ff", // A#
+      "#9900ff"  // B (violet)
     ];
-    return new THREE.Color(colors[noteIndex]);
-  } else if (scheme === 'electroneg') {
-    // Color based on electronegativity
-    const electronegativity = element.electronegativity ?? 0;
-    // Color from blue (low) to red (high)
-    const hue = (1 - (electronegativity / 4)) * 240; // 4 is approximate max electronegativity
-    return new THREE.Color(`hsl(${hue}, 100%, 50%)`);
+    return new THREE.Color(noteColors[noteIndex]);
+  }
+  // Color based on octave
+  else if (scheme === 'octave') {
+    // Color based on octave in the musical scale
+    const elemOctave = Math.floor(element.atomicNumber / 12);
+    const octaveColors = [
+      "#ff0000", // 1st octave (red)
+      "#ff7700", // 2nd octave (orange)
+      "#ffff00", // 3rd octave (yellow)
+      "#00ff00", // 4th octave (green)
+      "#0000ff", // 5th octave (blue)
+      "#8a2be2", // 6th octave (indigo)
+      "#ff00ff", // 7th octave (violet)
+      "#ffffff"  // 8th octave (white)
+    ];
+    
+    return new THREE.Color(octaveColors[elemOctave % octaveColors.length]);
   }
   
   // Default color
-  return new THREE.Color(0xaaaaaa);
+  return new THREE.Color('#bfbfbf');
 };
 
 const PeriodicTable3D: React.FC<PeriodicTable3DProps> = ({ 
   elements = periodicTableData.elements,
-  colorScheme: propColorScheme = 'note' 
+  colorScheme = 'category',
+  visualizationType = 'spiral'
 }) => {
-  // State for visualizations
-  const [visualizationType, setVisualizationType] = useState<VisualizationType>('spiral');
-  const [colorScheme, setColorScheme] = useState<ColorScheme>((propColorScheme || 'note') as ColorScheme);
-  // Use element store instead of local state
-  const { selectedElement, setSelectedElement } = useElementStore();
-  const [autoRotate, setAutoRotate] = useState(false);
-  const [showDetails, setShowDetails] = useState(false);
-  const [zoom, setZoom] = useState(8);
-  
-  // Update colorScheme when prop changes
-  useEffect(() => {
-    setColorScheme((propColorScheme || 'note') as ColorScheme);
-  }, [propColorScheme]);
-  
-  // Refs for Three.js objects
+  // Component state
+  const [colorSchemeState, setColorSchemeState] = useState<ColorScheme>(colorScheme);
+  const [visualizationTypeState, setVisualizationTypeState] = useState<VisualizationType>(visualizationType);
+  const [autoRotate, setAutoRotate] = useState(true);
+  const [showControls, setShowControls] = useState(true);
   const containerRef = useRef<HTMLDivElement>(null);
-  const requestRef = useRef<number>();
-  const sceneRef = useRef<THREE.Scene | null>(null);
-  const cameraRef = useRef<THREE.PerspectiveCamera | null>(null);
-  const rendererRef = useRef<THREE.WebGLRenderer | null>(null);
-  const controlsRef = useRef<CustomControls | null>(null);
-
-  // Create canvas texture for element display
-  const createElementLabel = (element: Element) => {
-    const canvas = document.createElement('canvas');
-    canvas.width = 256;
-    canvas.height = 256;
-    
-    const context = canvas.getContext('2d');
-    if (!context) return canvas;
-    
-    // Fill background
-    context.fillStyle = '#000000';
-    context.fillRect(0, 0, canvas.width, canvas.height);
-    
-    // Draw symbol in large text
-    context.font = 'bold 100px Arial';
-    context.textAlign = 'center';
-    context.fillStyle = '#ffffff';
-    context.fillText(element.symbol, canvas.width / 2, canvas.height / 2);
-    
-    // Draw atomic number
-    context.font = '40px Arial';
-    context.fillText(element.atomicNumber.toString(), canvas.width / 2, canvas.height / 2 + 60);
-    
-    return canvas;
-  };
+  const selectedElement = useElementStore(state => state.selectedElement);
   
-  // Create materials array for each face of the cube
-  const createElementMesh = (element: Element, scheme: ColorScheme, position: THREE.Vector3) => {
-    const color = getElementColor(element, scheme);
-    const colorHex = '#' + color.getHexString();
-    
-    // Create a single canvas texture to use for all faces
-    const canvas = createElementLabel(element);
-    const texture = new THREE.CanvasTexture(canvas);
-    
-    // Create materials for each face
-    const materials = [
-      new THREE.MeshPhongMaterial({ color: colorHex, map: texture }),
-      new THREE.MeshPhongMaterial({ color: colorHex, map: texture }),
-      new THREE.MeshPhongMaterial({ color: colorHex, map: texture }),
-      new THREE.MeshPhongMaterial({ color: colorHex, map: texture }),
-      new THREE.MeshPhongMaterial({ color: colorHex, map: texture }),
-      new THREE.MeshPhongMaterial({ color: colorHex, map: texture })
-    ];
-    
-    // Create mesh
-    const geometry = new THREE.BoxGeometry(1, 1, 1);
-    const cube = new THREE.Mesh(geometry, materials);
-    cube.position.copy(position);
-    
-    // Store element data as user data for raycasting
-    cube.userData.element = element;
-    
-    return cube;
-  };
-
-  // Initialize and maintain Three.js scene
+  // Three.js related state
+  const [camera, setCamera] = useState<THREE.PerspectiveCamera | null>(null);
+  const [controls, setControls] = useState<CustomControls | null>(null);
+  const [scene, setScene] = useState<THREE.Scene | null>(null);
+  const [renderer, setRenderer] = useState<THREE.WebGLRenderer | null>(null);
+  
+  // Effect for initializing the 3D scene
   useEffect(() => {
     if (!containerRef.current) return;
-
-    // Clear previous scene
-    while (containerRef.current.firstChild) {
-      containerRef.current.removeChild(containerRef.current.firstChild);
-    }
-
-    // Setup scene
-    const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x121212);
-    sceneRef.current = scene;
     
-    // Setup camera
-    const aspect = containerRef.current.clientWidth / containerRef.current.clientHeight;
-    const camera = new THREE.PerspectiveCamera(75, aspect, 0.1, 1000);
-    camera.position.z = zoom;
-    cameraRef.current = camera;
+    // Scene initialization
+    const container = containerRef.current;
+    const width = container.clientWidth;
+    const height = container.clientHeight;
     
-    // Setup renderer
-    const renderer = new THREE.WebGLRenderer({ antialias: true });
-    renderer.setSize(containerRef.current.clientWidth, containerRef.current.clientHeight);
-    containerRef.current.appendChild(renderer.domElement);
-    rendererRef.current = renderer;
+    // Scene setup
+    const newScene = new THREE.Scene();
+    newScene.background = new THREE.Color(0x111111);
     
-    // Add lights
-    const ambientLight = new THREE.AmbientLight(0x404040, 1);
-    scene.add(ambientLight);
+    // Camera setup
+    const aspect = width / height;
+    const newCamera = new THREE.PerspectiveCamera(75, aspect, 0.1, 1000);
+    newCamera.position.z = 15;
     
-    const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
-    directionalLight.position.set(5, 5, 5);
-    scene.add(directionalLight);
+    // Renderer setup
+    const newRenderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    newRenderer.setSize(width, height);
+    newRenderer.setPixelRatio(window.devicePixelRatio);
+    container.appendChild(newRenderer.domElement);
     
-    const directionalLight2 = new THREE.DirectionalLight(0xffffff, 0.5);
-    directionalLight2.position.set(-5, -5, -5);
-    scene.add(directionalLight2);
+    // Lighting
+    const ambientLight = new THREE.AmbientLight(0x808080);
+    newScene.add(ambientLight);
     
-    // Create custom controls instead of OrbitControls
-    const controls = new CustomControls(camera, renderer.domElement);
-    controls.setAutoRotate(autoRotate);
-    controlsRef.current = controls;
+    const mainLight = new THREE.DirectionalLight(0xffffff, 1);
+    mainLight.position.set(10, 10, 10);
+    newScene.add(mainLight);
     
-    // Create raycaster for mouse picking
-    const raycaster = new THREE.Raycaster();
-    const mouse = new THREE.Vector2();
+    const fillLight = new THREE.DirectionalLight(0xffffff, 0.5);
+    fillLight.position.set(-10, -10, -10);
+    newScene.add(fillLight);
     
-    // Create periodic table
-    const elementObjects: { [key: string]: THREE.Mesh } = {};
-    const boundingBox = new THREE.Box3();
+    // Controls
+    const newControls = new CustomControls(newCamera, newRenderer.domElement);
+    newControls.setAutoRotate(autoRotate);
     
-    // Create elements based on visualization type
-    elements.forEach((element) => {
-      const position = getElementPosition(element.atomicNumber);
-      const mesh = createElementMesh(element, colorScheme, position);
+    // Save references
+    setCamera(newCamera);
+    setControls(newControls);
+    setScene(newScene);
+    setRenderer(newRenderer);
+    
+    // Cleanup on component unmount
+    return () => {
+      if (newRenderer && container) {
+        container.removeChild(newRenderer.domElement);
+        newRenderer.dispose();
+      }
       
-      // Store mesh reference
-      elementObjects[element.symbol] = mesh;
+      if (newControls) {
+        newControls.dispose();
+      }
       
-      // Add to scene
-      scene.add(mesh);
-
-      // Expand bounding box to include this element
-      boundingBox.expandByObject(mesh);
-    });
+      // Clean up any meshes
+      if (newScene) {
+        newScene.traverse((object) => {
+          if (object instanceof THREE.Mesh) {
+            disposeGeometryAndMaterial(object);
+          }
+        });
+      }
+    };
+  }, [autoRotate]);
+  
+  // Effect for handling window resize
+  useEffect(() => {
+    if (!containerRef.current || !camera || !renderer) return;
     
-    // Center the entire periodic table based on its bounding box
-    const center = new THREE.Vector3();
-    boundingBox.getCenter(center);
-    
-    // Adjust all element positions to center the table
-    Object.values(elementObjects).forEach(mesh => {
-      mesh.position.sub(center);
-    });
-    
-    // Handle window resize
     const handleResize = () => {
-      const container = containerRef.current;
-      const camera = cameraRef.current;
-      const renderer = rendererRef.current;
+      if (!containerRef.current || !camera || !renderer) return;
       
-      if (!container || !camera || !renderer) return;
-      
-      const width = container.clientWidth;
-      const height = container.clientHeight;
+      const width = containerRef.current.clientWidth;
+      const height = containerRef.current.clientHeight;
       
       camera.aspect = width / height;
       camera.updateProjectionMatrix();
@@ -431,170 +481,177 @@ const PeriodicTable3D: React.FC<PeriodicTable3DProps> = ({
     
     window.addEventListener('resize', handleResize);
     
-    // Handle clicking on elements
-    const handleClick = (event: MouseEvent) => {
-      if (!containerRef.current || !cameraRef.current) return;
-      
-      // Calculate mouse position in normalized device coordinates
-      const rect = containerRef.current.getBoundingClientRect();
-      mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
-      mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
-      
-      // Update the raycaster
-      raycaster.setFromCamera(mouse, cameraRef.current);
-      
-      // Find intersections
-      const intersects = raycaster.intersectObjects(scene.children);
-      
-      if (intersects.length > 0) {
-        const selectedObject = intersects[0].object;
-        
-        // Find which element was clicked using userData
-        if (selectedObject.userData?.element) {
-          const clickedElement = selectedObject.userData.element as Element;
-          console.log(`Selected element: ${clickedElement.name} (${clickedElement.symbol})`);
-          setSelectedElement(clickedElement);
-        }
-      }
+    return () => {
+      window.removeEventListener('resize', handleResize);
     };
+  }, [camera, renderer]);
+  
+  // Effect for populating the scene with element cubes
+  useEffect(() => {
+    if (!scene) return;
     
-    containerRef.current.addEventListener('click', handleClick);
+    // Clear existing elements
+    const elementsToRemove: THREE.Object3D[] = [];
+    scene.traverse((object) => {
+      if (object instanceof THREE.Mesh && object.userData.isElementCube) {
+        elementsToRemove.push(object);
+      }
+    });
     
-    // Animation loop
+    elementsToRemove.forEach((object) => {
+      scene.remove(object);
+      if (object instanceof THREE.Mesh) {
+        disposeGeometryAndMaterial(object);
+      }
+    });
+    
+    // Add elements
+    elements.forEach(element => {
+      const position = getElementPosition(element.atomicNumber, visualizationTypeState);
+      
+      // Create a mesh for each element (this will be replaced by ElementCube in React Three Fiber)
+      const geometry = new THREE.BoxGeometry(1, 1, 1);
+      const material = new THREE.MeshStandardMaterial({
+        color: getElementColor(element, colorSchemeState),
+        metalness: 0.5,
+        roughness: 0.5
+      });
+      
+      const mesh = new THREE.Mesh(geometry, material);
+      mesh.position.copy(position);
+      mesh.userData = { 
+        isElementCube: true, 
+        atomicNumber: element.atomicNumber,
+        symbol: element.symbol,
+        name: element.name
+      };
+      
+      scene.add(mesh);
+    });
+    
+  }, [scene, elements, colorSchemeState, visualizationTypeState]);
+  
+  // Animation loop
+  useEffect(() => {
+    if (!renderer || !scene || !camera || !controls) return;
+    
+    let frameId: number;
+    
     const animate = () => {
-      requestRef.current = requestAnimationFrame(animate);
+      frameId = requestAnimationFrame(animate);
       
-      if (controlsRef.current) {
-        controlsRef.current.update();
-      }
+      // Update controls
+      controls.update();
       
-      if (rendererRef.current && cameraRef.current && sceneRef.current) {
-        rendererRef.current.render(sceneRef.current, cameraRef.current);
-      }
+      // Render the scene
+      renderer.render(scene, camera);
     };
     
     animate();
     
-    // Apply zoom from state
-    camera.position.z = zoom;
-    
-    // Cleanup on unmount
     return () => {
-      if (requestRef.current) {
-        cancelAnimationFrame(requestRef.current);
-      }
-      
-      window.removeEventListener('resize', handleResize);
-      containerRef.current?.removeEventListener('click', handleClick);
-      
-      // Dispose geometries and materials
-      Object.values(elementObjects).forEach(disposeGeometryAndMaterial);
-      
-      if (controlsRef.current) controlsRef.current.dispose();
-      if (rendererRef.current) rendererRef.current.dispose();
+      cancelAnimationFrame(frameId);
     };
-  }, [visualizationType, autoRotate, zoom, colorScheme]);
-
-  // Update auto-rotate when checkbox changes
-  useEffect(() => {
-    if (controlsRef.current) {
-      controlsRef.current.setAutoRotate(autoRotate);
+  }, [renderer, scene, camera, controls]);
+  
+  // Handlers for controls
+  const handleColorSchemeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setColorSchemeState(e.target.value as ColorScheme);
+  };
+  
+  const handleVisualizationTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setVisualizationTypeState(e.target.value as VisualizationType);
+  };
+  
+  const toggleAutoRotate = () => {
+    const newAutoRotate = !autoRotate;
+    setAutoRotate(newAutoRotate);
+    if (controls) {
+      controls.setAutoRotate(newAutoRotate);
     }
-  }, [autoRotate]);
-
-  // Update zoom when slider changes
-  useEffect(() => {
-    if (cameraRef.current) {
-      cameraRef.current.position.z = zoom;
-    }
-  }, [zoom]);
+  };
+  
+  const toggleControls = () => {
+    setShowControls(!showControls);
+  };
   
   return (
-    <div className={styles.periodicTableContainer}>
-      <div className={styles.controlBar}>
-        <div className={styles.visualizationControls}>
-          <div className={styles.visualizationSelector}>
-            <span>Visualization:</span>&nbsp;
+    <div className={styles.container}>
+      <div ref={containerRef} className={styles.visualizationContainer}></div>
+      
+      {/* Controls Panel */}
+      {showControls && (
+        <div className={styles.controlsPanel}>
+          <div className={styles.controlGroup}>
+            <label htmlFor="colorScheme">Color Scheme:</label>
             <select 
-              value={visualizationType} 
-              onChange={(e) => setVisualizationType(e.target.value as VisualizationType)}
+              id="colorScheme"
+              value={colorSchemeState}
+              onChange={handleColorSchemeChange}
+              className={styles.select}
             >
-              <option value="spiral">Spiral (Atomic Number)</option>
-              <option value="table">Traditional Table</option>
-              <option value="harmonic">Harmonic (Frequency)</option>
+              <option value="category">Element Category</option>
+              <option value="state">Physical State</option>
+              <option value="atomic-radius">Atomic Radius</option>
+              <option value="frequency">Musical Frequency</option>
+              <option value="octave">Musical Octave</option>
             </select>
           </div>
-          <label className={styles.controlLabel}>
-            <input
-              type="checkbox"
-              checked={autoRotate}
-              onChange={(e) => setAutoRotate(e.target.checked)}
-            />
-            <span>Auto Rotate</span>
-          </label>
-          <label className={styles.controlLabel}>
-            <input
-              type="checkbox"
-              checked={showDetails}
-              onChange={(e) => setShowDetails(e.target.checked)}
-            />
-            <span>Show Details</span>
-          </label>
-        </div>
-        
-        <div className={styles.soundControls}>
-          <span>Zoom:</span>&nbsp;
-          <input
-            type="range"
-            min={2}
-            max={20}
-            value={zoom}
-            onChange={(e) => setZoom(Number(e.target.value))}
-            className={styles.slider}
-          />
-        </div>
-      </div>
-
-      <div className={styles.mainContent}>
-        <div className={styles.visualizationContainer}>
-          <div className={styles.visualization} ref={containerRef}>
-            {!selectedElement && (
-              <div className={styles.interactiveControls}>
-                <h3>Interactive Controls:</h3>
-                <ul>
-                  <li><strong>Rotate:</strong> Click and drag with mouse</li>
-                  <li><strong>Zoom:</strong> Use mouse wheel to zoom in/out</li>
-                  <li><strong>Select:</strong> Click on any element to see details</li>
-                  <li><strong>Auto-Rotate:</strong> Toggle rotation with the checkbox above</li>
-                </ul>
-              </div>
-            )}
+          
+          <div className={styles.controlGroup}>
+            <label htmlFor="visualizationType">Visualization:</label>
+            <select 
+              id="visualizationType"
+              value={visualizationTypeState}
+              onChange={handleVisualizationTypeChange}
+              className={styles.select}
+            >
+              <option value="spiral">Spiral</option>
+              <option value="table">Periodic Table</option>
+              <option value="harmonic">Harmonic</option>
+              <option value="orbital">Orbital</option>
+            </select>
           </div>
           
-          {selectedElement && (
-            <div className={styles.elementDescription}>
-              <h2>{selectedElement.name} ({selectedElement.symbol})</h2>
-              <div className={styles.elementInfo}>
-                <p><strong>Atomic Number:</strong> {selectedElement.atomicNumber}</p>
-                <p><strong>Atomic Mass:</strong> {selectedElement.atomicMass}</p>
-                <p><strong>Category:</strong> {selectedElement.category}</p>
-                <p><strong>State:</strong> {selectedElement.state}</p>
-                <p><strong>Electron Configuration:</strong> {selectedElement.electronConfiguration}</p>
-                {selectedElement.electronegativity && (
-                  <p><strong>Electronegativity:</strong> {selectedElement.electronegativity}</p>
-                )}
-              </div>
-            </div>
-          )}
+          <div className={styles.controlGroup}>
+            <button 
+              onClick={toggleAutoRotate}
+              className={`${styles.button} ${autoRotate ? styles.active : ''}`}
+            >
+              {autoRotate ? 'Disable Auto-Rotate' : 'Enable Auto-Rotate'}
+            </button>
+          </div>
+          
+          {/* Color Legend */}
+          <div className={styles.legendContainer}>
+            <ColorLegend colorScheme={colorSchemeState} />
+          </div>
         </div>
-        
-        {selectedElement && (
-          <div className={styles.atomicStructurePanelLarge}>
-            <h3 className={styles.sectionTitle}>Atomic Structure</h3>
+      )}
+      
+      {/* Toggle Controls Button */}
+      <button 
+        className={styles.toggleControls}
+        onClick={toggleControls}
+      >
+        {showControls ? 'Hide Controls' : 'Show Controls'}
+      </button>
+      
+      {/* Element Details Panel */}
+      {selectedElement && (
+        <div className={styles.elementDetails}>
+          <h3>{selectedElement.name} ({selectedElement.symbol})</h3>
+          <p>Atomic Number: {selectedElement.atomicNumber}</p>
+          <p>Atomic Mass: {selectedElement.atomicMass}</p>
+          <p>Category: {selectedElement.category}</p>
+          <p>State: {selectedElement.state}</p>
+          
+          {/* Atomic Structure Visualization */}
+          <div className={styles.atomicStructure}>
             <AtomicStructure element={selectedElement} />
           </div>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 };

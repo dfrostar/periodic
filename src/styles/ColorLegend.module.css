@@ -1,9 +1,11 @@
 .legendContainer {
-  background-color: rgba(30, 40, 50, 0.8);
+  background-color: rgba(30, 40, 50, 0.9);
   border-radius: 8px;
   padding: 12px;
   margin-top: 15px;
   max-width: 100%;
+  border: 1px solid rgba(100, 100, 255, 0.5);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
 }
 
 .legendTitle {
@@ -12,44 +14,55 @@
   font-size: 16px;
   font-weight: 500;
   text-align: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  padding-bottom: 8px;
 }
 
 .legendItems {
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
   gap: 8px;
   justify-content: center;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.categoryLegend, .stateLegend, .frequencyLegend, .octaveLegend {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
 }
 
 .legendItem {
   display: flex;
   align-items: center;
-  margin-right: 10px;
   font-size: 12px;
   color: #f0f0f0;
+  padding: 2px 0;
 }
 
 .colorBox {
-  width: 15px;
-  height: 15px;
+  width: 18px;
+  height: 18px;
   border-radius: 3px;
-  margin-right: 4px;
+  margin-right: 8px;
   border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
 }
 
 .gradientLegend {
   width: 100%;
-  max-width: 300px;
-  margin: 0 auto;
+  margin: 5px auto;
 }
 
 .gradientBar {
-  height: 15px;
+  height: 20px;
   width: 100%;
   border-radius: 3px;
-  background: linear-gradient(to right, hsl(0, 80%, 65%), hsl(240, 80%, 65%));
-  margin-bottom: 4px;
+  margin-bottom: 6px;
   border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
 }
 
 .gradientLabels {
@@ -59,22 +72,40 @@
   color: #f0f0f0;
 }
 
-.frequencyLegend, .octaveLegend {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  justify-content: center;
-  width: 100%;
+/* Special styling for music-related legends */
+.frequencyLegend .legendItem, .octaveLegend .legendItem {
+  border-bottom: 1px dotted rgba(255, 255, 255, 0.1);
 }
 
+.frequencyLegend .colorBox, .octaveLegend .colorBox {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+}
+
+/* Media queries for responsiveness */
 @media (max-width: 768px) {
+  .legendContainer {
+    padding: 8px;
+  }
+  
+  .legendTitle {
+    font-size: 14px;
+  }
+  
   .legendItem {
     font-size: 10px;
-    margin-right: 5px;
   }
   
   .colorBox {
     width: 12px;
     height: 12px;
   }
+}
+
+/* Special styles for 3D legend in canvas */
+.threeDLegend {
+  width: 100%;
+  max-height: 300px;
+  overflow-y: auto;
 }

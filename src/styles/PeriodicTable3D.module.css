@@ -83,12 +83,10 @@
   padding: 1rem;
   background-color: #1a1a1a;
   border-top: 1px solid #333;
-}
-
-.elementDescription h2 {
-  margin-top: 0;
-  color: #ffffff;
-  font-size: 1.5rem;
+  font-size: 16px;
+  margin-top: 8px;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.9);
 }
 
 .elementInfo {
@@ -379,10 +377,24 @@
   margin: 5px 0;
 }
 
-.elementDescription {
-  font-size: 0.85rem;
-  line-height: 1.4;
-  color: rgba(255, 255, 255, 0.9);
+.colorSchemeSelector {
+  display: flex;
+  align-items: center;
+  margin-top: 10px;
+  color: white;
+}
+
+.colorSchemeSelector select {
+  background-color: #303030;
+  color: white;
+  border: 1px solid #505050;
+  padding: 5px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.colorSchemeSelector select:hover {
+  background-color: #404040;
 }
 
 /* Responsive design for smaller screens */
